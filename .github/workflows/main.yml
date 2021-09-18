@@ -1,5 +1,4 @@
-name: Python Package (Build Only)
-
+name: Main CI
 on: [push]
 
 jobs:
