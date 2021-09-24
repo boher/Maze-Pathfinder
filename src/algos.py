@@ -5,15 +5,15 @@ from ui.node import Node
 
 
 class Algo:
-    def __init__(self, draw: Callable, grid: list[list[Node]], start: Node, end: Node) -> None:
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node) -> None:
         self.draw = draw
         self.grid = grid
         self.start = start
         self.end = end
-        self.came_from = {}
+        self.came_from: dict[Node, Node] = {}
         self.heuristics = 0
         # Implemented using binary heap, get the smallest element every execution
-        self.open_set = PriorityQueue()
+        self.open_set: PriorityQueue[Tuple[float, int, Node]] = PriorityQueue()
         self.count = 0
         # Assume node is infinity distance away from compared node
         # (actual weighted path score & own est. weighted path score, since it's G(n) + H(n))
@@ -40,7 +40,7 @@ class Algo:
     3rd param: nodes drawn
     No return
     """
-    def optimal_path(self, came_from: dict, current: Node, draw: Callable) -> None:
+    def optimal_path(self, came_from: dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
         while current in came_from:
             current = came_from[current]
             current.set_path()

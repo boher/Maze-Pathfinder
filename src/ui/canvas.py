@@ -1,17 +1,17 @@
 import pygame
 import colour
+from itertools import chain
 from typing import Tuple
+from states.state import State
 from .node import Node
 
 
-class Canvas:
+class Canvas(State):
     def __init__(self) -> None:
+        State.__init__(self)
         self.width = 640
         self.rows = 40
         self.gap = self.width // self.rows
-        self.screen = pygame.display.set_mode((self.width, self.width), pygame.SCALED)
-        pygame.display.set_caption("Maze-Pathfinder")
-        pygame.font.init()
 
     def create_grid(self) -> list[list[Node]]:
         grid = [[Node(row, col, self.gap, self.rows) for col in range(self.rows)] for row in range(self.rows)]
@@ -26,7 +26,9 @@ class Canvas:
 
     def draw_canvas(self, grid: list[list[Node]]) -> None:
         self.screen.fill(colour.WHITE)
-        [node.draw(self.screen) for row in grid for node in row]
+        row = chain.from_iterable(grid)
+        for node in row:
+            node.draw(self.screen)
         self.draw_grid()
         pygame.display.update()
 

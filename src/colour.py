@@ -8,4 +8,5 @@ TURQUOISE = pygame.Color('paleturquoise')  # Traversed nodes
 WHITE = pygame.Color('white')  # 2D Canvas Grid / Untraversed node
 BLACK = pygame.Color('black')  # Construct blocking nodes (walls)
 MAGENTA = pygame.Color('darkmagenta')  # Completed path
+OFF_WHITE = pygame.Color('floralwhite')  # Instructions popup helper
 GREY = pygame.Color('grey')

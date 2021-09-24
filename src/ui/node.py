@@ -12,25 +12,25 @@ class Node:
         self.y = row * length
         self.total_rows = total_rows
         self.colour = colour.WHITE
-        self.neighbours = []
+        self.neighbours: list['Node'] = []
         self.walls = [False, False, False, False]  # up, down, left, right
 
     def get_pos(self) -> Tuple[int, int]:
         return self.row, self.col
 
-    def get_open(self) -> colour:
+    def get_open(self) -> bool:
         return self.colour == colour.BLUE  # Traversing nodes (in open set, currently looking @ them)
 
-    def get_closed(self) -> colour:
+    def get_closed(self) -> bool:
         return self.colour == colour.TURQUOISE  # Traversed nodes (in closed set, already looked @ them)
 
-    def get_wall(self) -> colour:
+    def get_wall(self) -> bool:
         return self.colour == colour.BLACK  # Construct blocking nodes (walls)
 
-    def get_start(self) -> colour:
+    def get_start(self) -> bool:
         return self.colour == colour.GREEN  # Start node
 
-    def get_end(self) -> colour:
+    def get_end(self) -> bool:
         return self.colour == colour.RED  # End node
 
     def btwn_wall(self, pos: int) -> bool:
@@ -57,7 +57,7 @@ class Node:
     def set_path(self) -> None:
         self.colour = colour.MAGENTA
 
-    def draw(self, screen: pygame.Surface) -> None:
+    def draw(self, screen: pygame.surface.Surface) -> None:
         pygame.draw.rect(screen, self.colour, (self.x, self.y, self.length, self.length))
 
     """
@@ -65,7 +65,7 @@ class Node:
     2nd param canvas: Canvas grid displayed
     Return: Traversed nodes for pathfinding
     """
-    def update_neighbours(self, grid: list[list]) -> None:
+    def update_neighbours(self, grid: list[list['Node']]) -> None:
         self.neighbours = []
         # (Up) Not @ row 0 & grid is not a wall
         if self.row > 0 and not grid[self.row - 1][self.col].get_wall():

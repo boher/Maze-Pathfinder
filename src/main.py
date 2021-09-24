@@ -1,6 +1,6 @@
-from play import Play
+from states.play import Play
 
 if __name__ == "__main__":
     play = Play()
     while play.run:
-        play.get_events()
+        play.state_events()
