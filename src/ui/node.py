@@ -13,6 +13,7 @@ class Node:
         self.total_rows = total_rows
         self.colour = colour.WHITE
         self.neighbours: list['Node'] = []
+        self._visited = False
         self.walls = [False, False, False, False]  # up, down, left, right
 
     def get_pos(self) -> Tuple[int, int]:
@@ -35,6 +36,14 @@ class Node:
 
     def btwn_wall(self, pos: int) -> bool:
         return self.walls[pos]
+
+    @property
+    def visited(self) -> bool:
+        return self._visited
+
+    @visited.setter
+    def visited(self, visited):
+        self._visited = visited
 
     def reset(self) -> None:
         self.colour = colour.WHITE
@@ -67,21 +76,48 @@ class Node:
     """
     def update_neighbours(self, grid: list[list['Node']]) -> None:
         self.neighbours = []
-        # (Up) Not @ row 0 & grid is not a wall
-        if self.row > 0 and not grid[self.row - 1][self.col].get_wall():
+        # (Up) Not @ row 0 & grid is not a wall (w/ cont. stmts in the algo functions), append previous row but same col
+        if self.row > 0:
             self.neighbours.append(grid[self.row - 1][self.col])
 
-        # (Down) Current row still within avail. total rows so that row can move down, append next row but same col
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].get_wall():
+        # (Down) Current row still within avail. total rows so that row can move down
+        # & grid is not a wall (w/ cont. stmts in the algo functions), append next row but same col
+        if self.row < self.total_rows - 1:
             self.neighbours.append(grid[self.row + 1][self.col])
 
-        # (Left) Not @ col 0 & grid is not a wall, append previous col but same row
-        if self.col > 0 and not grid[self.row][self.col - 1].get_wall():
+        # (Left) Not @ col 0 & grid is not a wall (w/ cont. stmts in the algo functions), append previous col but same row
+        if self.col > 0:
             self.neighbours.append(grid[self.row][self.col - 1])
 
-        # (Right) Current col still within avail. total rows so that rows can move right & grid is not a wall,
-        # append next col but same row
-        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].get_wall():
+        # (Right) Current col still within avail. total rows so that cols can move right
+        # & grid is not a wall (w/ cont. stmts in the algo functions), append next col but same row
+        if self.col < self.total_rows - 1:
+            self.neighbours.append(grid[self.row][self.col + 1])
+
+    """
+    Get Non-visited neighbours of a given node
+    2nd param: Canvas grid being used
+    Return: Non-visited neighbours
+    NOTE: .get_wall() for Dijkstra's & A*, get_visited() for Greedy Best-FS, Breadth-FS & Depth-FS
+    """
+    def update_nonvisited(self, grid: list[list['Node']]) -> None:
+        self.neighbours = []
+        # (Up) Not @ row 0 & node is untraversed, append previous row but same col
+        if self.row > 0 and not grid[self.row - 1][self.col].visited:
+            self.neighbours.append(grid[self.row - 1][self.col])
+
+        # (Down) Current row still within avail. total rows so that row can move down
+        # & node is untraversed, append next row but same col
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].visited:
+            self.neighbours.append(grid[self.row + 1][self.col])
+
+        # (Left) Not @ col 0 & node is untraversed, append previous col but same row
+        if self.col > 0 and not grid[self.row][self.col - 1].visited:
+            self.neighbours.append(grid[self.row][self.col - 1])
+
+        # (Right) Current col still within avail. total rows so that cols can move right
+        # & node is untraversed, append next col but same row
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].visited:
             self.neighbours.append(grid[self.row][self.col + 1])
 
     def __lt__(self, other: str) -> bool:

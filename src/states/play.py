@@ -43,11 +43,7 @@ class Play(Instructions):
                 elif pygame.mouse.get_pressed()[2]:
                     self.clear_nodes(node)
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        for row in self.grid:
-                            for node in row:
-                                node.update_neighbours(self.grid)
-                        self.pathfinding_algo()
+                    self.pathfinding_hotkeys(event.key)
                     if event.key == pygame.K_c:
                         self.clear_grid()
 

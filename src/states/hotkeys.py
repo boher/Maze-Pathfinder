@@ -1,3 +1,4 @@
+import pygame
 from typing import Optional
 from ui.canvas import Canvas
 from ui.node import Node
@@ -11,11 +12,23 @@ class HotKeys(Canvas):
         self.end: Optional[Node] = None
         self.path = False
         self.grid = self.create_grid()
-        self.algo = algos.Algo
+        self.pathfinding_keys = {
+            pygame.K_1: algos.Dijkstras,
+            pygame.K_2: algos.AStar,
+            pygame.K_3: algos.GreedyBestFS,
+            pygame.K_4: algos.BreadthFS,
+            pygame.K_5: algos.DepthFS
+        }
 
-    def pathfinding_algo(self) -> None:
-        if self.start and self.end:
-            self.algo(lambda: self.draw_canvas(self.grid), self.grid, self.start, self.end).execute()
+    def pathfinding_hotkeys(self, key_event) -> None:
+        if key_event in self.pathfinding_keys and self.start and self.end:
+            for row in self.grid:
+                for node in row:
+                    node.update_neighbours(self.grid)
+            selected_pathfinding = self.pathfinding_keys.get(key_event)
+            if selected_pathfinding is not None:
+                selected_pathfinding(lambda: self.draw_canvas(self.grid), self.grid, self.start, self.end).execute()
+                self.start.set_start()
 
     def clear_grid(self) -> None:
         self.grid = self.create_grid()
