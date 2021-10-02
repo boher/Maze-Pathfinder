@@ -4,13 +4,13 @@ from typing import Tuple
 
 
 class Node:
-    def __init__(self, row: int, col: int, length: int, total_rows: int) -> None:
+    def __init__(self, row: int, col: int, length: int, dimensions: Tuple[int, int]) -> None:
         self.row = row
         self.col = col
         self.length = length
         self.x = col * length
         self.y = row * length
-        self.total_rows = total_rows
+        self.total_rows, self.total_cols = dimensions
         self.colour = colour.WHITE
         self.neighbours: list['Node'] = []
         self._visited = False
@@ -89,9 +89,9 @@ class Node:
         if self.col > 0:
             self.neighbours.append(grid[self.row][self.col - 1])
 
-        # (Right) Current col still within avail. total rows so that cols can move right
+        # (Right) Current col still within avail. total cols so that cols can move right
         # & grid is not a wall (w/ cont. stmts in the algo functions), append next col but same row
-        if self.col < self.total_rows - 1:
+        if self.col < self.total_cols - 1:
             self.neighbours.append(grid[self.row][self.col + 1])
 
     """
@@ -115,9 +115,9 @@ class Node:
         if self.col > 0 and not grid[self.row][self.col - 1].visited:
             self.neighbours.append(grid[self.row][self.col - 1])
 
-        # (Right) Current col still within avail. total rows so that cols can move right
+        # (Right) Current col still within avail. total cols so that cols can move right
         # & node is untraversed, append next col but same row
-        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].visited:
+        if self.col < self.total_cols - 1 and not grid[self.row][self.col + 1].visited:
             self.neighbours.append(grid[self.row][self.col + 1])
 
     def __lt__(self, other: str) -> bool:
