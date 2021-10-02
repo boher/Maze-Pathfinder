@@ -22,9 +22,8 @@ class HotKeys(Canvas):
 
     def pathfinding_hotkeys(self, key_event) -> None:
         if key_event in self.pathfinding_keys and self.start and self.end:
-            for row in self.grid:
-                for node in row:
-                    node.update_neighbours(self.grid)
+            self.node_traversal(self.grid)
+            self.reset_node_visited(self.grid, self.start, self.end)
             selected_pathfinding = self.pathfinding_keys.get(key_event)
             if selected_pathfinding is not None:
                 selected_pathfinding(lambda: self.draw_canvas(self.grid), self.grid, self.start, self.end).execute()

@@ -32,6 +32,21 @@ class Canvas(State):
         self.draw_grid()
         pygame.display.update()
 
+    @staticmethod
+    def node_traversal(grid: list[list[Node]]) -> None:
+        row = chain.from_iterable(grid)
+        for node in row:
+            node.update_neighbours(grid)
+
+    @staticmethod
+    def reset_node_visited(grid: list[list[Node]], start: Node, end: Node):
+        def set_node_unvisited(node):
+            node.visited = False
+        row = chain.from_iterable(grid)
+        for node in row:
+            if node is not start or not end:
+                set_node_unvisited(node)
+
     def get_clicked_pos(self, pos: Tuple[int, int]) -> Tuple[int, int]:
         x, y = pos
         row = y // self.gap
