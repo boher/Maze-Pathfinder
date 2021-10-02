@@ -17,13 +17,13 @@ class Instructions(HotKeys):
                 x += text_surface.get_width()
             else:
                 y += text_surface.get_height()
-                self.screen.blit(text_surface, (self.width // 9.5, y))
+                self.screen.blit(text_surface, (self.width // 18.5, y))
                 x += text_surface.get_width()
 
     def get_instructions(self) -> str:
         return "This application visualizes various maze generation\nand pathfinding algorithms in a 2D canvas grid\n" \
-               "\nLeft-click to draw a start node, then an end node\nand finally left-click and drag to draw walls\n" \
-               "\nRight-click and drag to clear nodes\n" \
+               "\nDouble left-click to draw a start node, then an end node\n" \
+               "Left-click and drag to draw walls, right-click and drag to\nclear nodes\n" \
                "\nPress Spacebar to close instructions\n"
 
     def popup_helper(self) -> None:
