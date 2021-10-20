@@ -1,5 +1,6 @@
 import pygame
 from typing import Optional
+from .event_handler import EventHandler
 from .instructions import Instructions
 from ui.node import Node
 
@@ -49,39 +50,10 @@ class Play(Instructions):
     def get_events(self) -> None:
         while self.run:
             self.clock.tick(60)
-            latest_click = pygame.time.get_ticks()
             self.divider()
-            node = self.node_pos()
             self.draw_canvas(self.grid)
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.run = False
-                    self.play = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if latest_click - self.timer <= self.double_click and node is not None:
-                        self.start_end_nodes(node)
-                    self.timer = latest_click
-                    if event.button == 1:
-                        self.hold = True
-                        self.draw_erase_state()
-                        if self.helper_btn.clicked():
-                            self.instructions = True
-                            self.popup_helper()
-                if event.type == pygame.MOUSEMOTION:
-                    if self.hold and node is not None:
-                        if self.erase:
-                            self.clear_nodes(node)
-                        else:
-                            self.wall_nodes(node)
-                if event.type == pygame.MOUSEBUTTONUP:
-                    self.hold = False
-                if event.type == pygame.KEYDOWN:
-                    self.pathfinding_hotkeys(event.key)
-                    if event.key == pygame.K_c:
-                        self.clear_grid()
-                    if event.key == pygame.K_h:
-                        self.instructions = True
-                        self.popup_helper()
+                EventHandler.notify(self, event)
 
     def state_events(self) -> None:
         while self.play:

@@ -29,6 +29,10 @@ class HotKeys(Canvas):
                 selected_pathfinding(lambda: self.draw_canvas(self.grid), self.grid, self.start, self.end).execute()
                 self.start.set_start()
 
+    def clearing_keys(self, key_event: int) -> None:
+        if key_event == pygame.K_c:
+            self.clear_grid()
+
     def clear_grid(self) -> None:
         self.grid = self.create_grid()
         self.start = None
