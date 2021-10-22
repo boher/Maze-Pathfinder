@@ -17,8 +17,9 @@ class AStar(Algos):
     4th param: End node
     Return: True if path is completed, false if no possible path
     """
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node) -> None:
-        Algos.__init__(self, draw, grid, start, end)
+
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int) -> None:
+        Algos.__init__(self, draw, grid, start, end, speed)
         self.count = 0
         self.open_set_hash: set[Node] = set()
         # Assume node is infinity distance away from compared node
@@ -39,6 +40,8 @@ class AStar(Algos):
             # Do not traverse over neighbour nodes that are walls
             if neighbour.get_wall():
                 continue
+
+            self.set_speed()
 
             temp_g_score = self.g_score[current] + 1
 

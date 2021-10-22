@@ -1,6 +1,6 @@
 import pygame
 import colour
-from typing import Tuple
+from typing import Tuple, Union
 from states.state import State
 
 
@@ -37,7 +37,7 @@ class Button(State):
         pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), border_radius=self.radius)
         self.get_text()
 
-    def clicked(self) -> bool:
+    def clicked(self) -> Union[bool, int]:
         self.pos = pygame.mouse.get_pos()
         x, y = self.pos
         if (self.x <= x <= self.x + self.width) and (self.y <= y <= self.y + self.height):

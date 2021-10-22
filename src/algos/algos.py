@@ -5,17 +5,21 @@ from ui.node import Node
 
 
 class Algos:
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node) -> None:
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int) -> None:
         self.draw = draw
         self.grid = grid
         self.start = start
         self.end = end
+        self.speed = speed
         self.came_from: dict[Node, Node] = {}
         self.heuristics = 0
         # Implemented using binary heap, get the smallest element every execution
         self.open_set: PriorityQueue[Any[Tuple[int, int, Node]]] = PriorityQueue()
         self.queue: Queue[Node] = Queue()
         self.stack: LifoQueue[Node] = LifoQueue()
+
+    def set_speed(self) -> None:
+        pygame.time.delay(self.speed)
 
     """
     Manhattan distance heuristics
@@ -37,11 +41,12 @@ class Algos:
     3rd param: nodes drawn
     No return
     """
-    @staticmethod
-    def optimal_path(came_from: dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
+
+    def optimal_path(self, came_from: dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
         while current in came_from:
             current = came_from[current]
             current.set_path()
+            self.set_speed()
             draw()
 
     @staticmethod

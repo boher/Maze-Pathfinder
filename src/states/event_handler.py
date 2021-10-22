@@ -40,9 +40,9 @@ def helper_click_actions(instructions: 'Instructions', event: pygame.event.Event
     forward_btn = instructions.forward_btn
     back_btn = instructions.back_btn
     if event.button == left_button:
-        instructions.hold = True
         if close_btn.clicked():
             instructions.instructions = False
+            instructions.speed = 15
         if forward_btn.clicked():
             while instructions.index < 2:
                 instructions.index += 1
@@ -138,3 +138,47 @@ def draw_state(play_obj: 'Play', event: pygame.event.Event) -> None:
         if erase_btn.clicked():
             play_obj.erase = True
             erase_btn.colour, draw_btn.colour = erase_btn.hover_colour, colour.BLUE_GREY
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def clear_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
+    left_button = 1
+    clear_options = play_obj.clear_options
+    clear_options.menu_active = clear_options.rect.collidepoint(play_obj.pos)
+    if event.button == left_button and clear_options.clicked():
+        active_option = clear_options.active_option
+        if clear_options.menu_active:
+            clear_options.draw_menu = not clear_options.draw_menu
+        elif clear_options.draw_menu and active_option >= 0:
+            clear_options.draw_menu = False
+            if active_option == 0:
+                play_obj.clear_path()
+            if active_option == 1:
+                play_obj.clear_walls()
+            if active_option == 2:
+                play_obj.clear_grid()
+            return active_option
+    return clear_options.clicked()
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
+    left_button = 1
+    speed_btn = play_obj.speed_options.main
+    speed_options = play_obj.speed_options
+    speed_options.menu_active = speed_options.rect.collidepoint(play_obj.pos)
+    if event.button == left_button and speed_options.clicked():
+        active_option = speed_options.active_option
+        if speed_options.menu_active:
+            speed_options.draw_menu = not speed_options.draw_menu
+        elif speed_options.draw_menu and active_option >= 0:
+            speed_options.draw_menu = False
+            speed_btn.text = speed_options.options[active_option]
+            if active_option == 0:
+                play_obj.speed = 25  # Slow
+            if active_option == 1:
+                play_obj.speed = 15  # Default
+            if active_option == 2:
+                play_obj.speed = 5  # Fast
+            return active_option
+    return speed_options.clicked()

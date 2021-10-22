@@ -12,8 +12,6 @@ class Canvas(NavBar):
         self.rows = 32
         self.cols = 48
         self.nav_height = 3
-        self.hold = False
-        self.erase = False
         self.gap = self.width // self.rows
 
     def create_grid(self) -> list[list[Node]]:
@@ -53,13 +51,19 @@ class Canvas(NavBar):
             if node is not start or not end:
                 set_node_unvisited(node)
 
-    def draw_erase_state(self) -> None:
-        if self.draw_btn.clicked():
-            self.erase = False
-            self.draw_btn.colour, self.erase_btn.colour = self.erase_btn.hover_colour, colour.BLUE_GREY
-        if self.erase_btn.clicked():
-            self.erase = True
-            self.erase_btn.colour, self.draw_btn.colour = self.erase_btn.hover_colour, colour.BLUE_GREY
+    def reset_traversed_path(self, grid: list[list[Node]], start: Node, end: Node) -> None:
+        self.reset_node_visited(grid, start, end)
+        row = chain.from_iterable(grid)
+        for node in row:
+            if node.colour in (colour.BLUE, colour.TURQUOISE, colour.MAGENTA):
+                node.reset()
+
+    @staticmethod
+    def reset_walls(grid: list[list[Node]]) -> None:
+        row = chain.from_iterable(grid)
+        for node in row:
+            if node.get_wall():
+                node.reset()
 
     def get_clicked_pos(self, pos: Tuple[int, int]) -> Tuple[int, int]:
         x, y = pos

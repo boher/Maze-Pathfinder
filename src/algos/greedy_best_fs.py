@@ -14,8 +14,8 @@ class GreedyBestFS(Algos):
     4th param: End node
     Return: True if path is completed, false if no possible path
     """
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node) -> None:
-        Algos.__init__(self, draw, grid, start, end)
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int) -> None:
+        Algos.__init__(self, draw, grid, start, end, speed)
 
     def put_open_set(self) -> None:
         # Put nodes only w/ ideal calculated heuristics between start node and end node
@@ -27,6 +27,8 @@ class GreedyBestFS(Algos):
             # Do not traverse over neighbour nodes that are walls
             if neighbour.get_wall():
                 continue
+
+            self.set_speed()
 
             # Mark neighbour node visited as True, then subsequently compared to the current node,
             # which will only put nodes with the ideal calculated heuristics
