@@ -5,6 +5,11 @@ from typing import Callable, Dict, TYPE_CHECKING, TypeVar, Union
 if TYPE_CHECKING:  # Avoid circular imports
     from .instructions import Instructions
     from .play import Play
+    from ui.button import Button
+    from ui.drop_down import DropDown
+
+# Since pygame keys are integer constants
+PATHFINDING_KEY_OFFSET = 49
 
 
 class InstructionsHandler:
@@ -121,7 +126,7 @@ def hot_key_down(play_obj: 'Play', event: pygame.event.Event) -> None:
     if event.key == pygame.K_h:
         play_obj.instructions = True
         play_obj.popup_helper()
-    play_obj.pathfinding_hotkeys(event.key)
+    hot_key_visualize(play_obj, event)
     play_obj.clearing_keys(event.key)
 
 
@@ -130,7 +135,8 @@ def draw_state(play_obj: 'Play', event: pygame.event.Event) -> None:
     left_button = 1
     draw_btn = play_obj.draw_btn
     erase_btn = play_obj.erase_btn
-    if event.button == left_button:
+    visualize_btn = play_obj.visualize_btn
+    if event.button == left_button and not visualize_btn.clicked():
         play_obj.hold = True
         if draw_btn.clicked():
             play_obj.erase = False
@@ -182,3 +188,49 @@ def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
                 play_obj.speed = 5  # Fast
             return active_option
     return speed_options.clicked()
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def visualize_state(play_obj: 'Play', event: pygame.event.Event) -> None:
+    left_button = 1
+    visualize_btn = play_obj.visualize_btn
+    pathfinding_active_option = play_obj.pathfinding_options.active_option
+    if event.button == left_button and visualize_btn.clicked():
+        play_obj.pathfinding_options.draw_menu = False
+        visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA
+        play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
+    visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def pathfinding_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
+    pathfinding_btn = play_obj.pathfinding_options.main
+    pathfinding_options = play_obj.pathfinding_options
+    algo_actions(play_obj, event, pathfinding_btn, pathfinding_options)
+
+
+def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button', algo_options: 'DropDown') -> int:
+    left_button = 1
+    algo_options.menu_active = algo_options.rect.collidepoint(play_obj.pos)
+    if event.button == left_button and algo_options.clicked():
+        active_option = algo_options.active_option
+        if algo_options.menu_active:
+            algo_options.draw_menu = not algo_options.draw_menu
+        elif algo_options.draw_menu and active_option >= 0:
+            algo_options.draw_menu = False
+            algo_btn.text = algo_options.options[active_option]
+        return active_option
+    return algo_options.clicked()
+
+
+def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event):
+    visualize_btn = play_obj.visualize_btn
+    pathfinding_btn = play_obj.pathfinding_options.main
+    visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA
+    play_obj.clear_options.update()
+    play_obj.speed_options.update()
+    if event.key in play_obj.pathfinding_keys:
+        play_obj.pathfinding_options.active_option = event.key - PATHFINDING_KEY_OFFSET
+        pathfinding_btn.text = play_obj.pathfinding_options.options[event.key - PATHFINDING_KEY_OFFSET]
+    play_obj.pathfinding_hotkeys(event.key)
+    visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE
