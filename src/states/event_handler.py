@@ -121,8 +121,18 @@ def stop_click_drag(play_obj: 'Play', *_) -> None:
     play_obj.hold = False
 
 
+@EventHandler.register(pygame.MOUSEMOTION)
+def dismiss_text(play_obj: 'Play', *_) -> None:
+    if play_obj.no_path_msg:
+        play_obj.no_path_msg = False
+    if play_obj.no_start_end_msg:
+        play_obj.no_start_end_msg = False
+
+
 @EventHandler.register(pygame.KEYDOWN)
 def hot_key_down(play_obj: 'Play', event: pygame.event.Event) -> None:
+    play_obj.no_path_msg = False
+    play_obj.pathfinding_options.draw_menu = False
     if event.key == pygame.K_h:
         play_obj.instructions = True
         play_obj.popup_helper()
@@ -199,6 +209,9 @@ def visualize_state(play_obj: 'Play', event: pygame.event.Event) -> None:
         play_obj.pathfinding_options.draw_menu = False
         visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA
         play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
+        if pathfinding_active_option + PATHFINDING_KEY_OFFSET in play_obj.pathfinding_keys:
+            if not play_obj.start or not play_obj.end:
+                play_obj.no_start_end_msg = True
     visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE
 
 
@@ -232,5 +245,7 @@ def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event):
     if event.key in play_obj.pathfinding_keys:
         play_obj.pathfinding_options.active_option = event.key - PATHFINDING_KEY_OFFSET
         pathfinding_btn.text = play_obj.pathfinding_options.options[event.key - PATHFINDING_KEY_OFFSET]
+        if not play_obj.start or not play_obj.end:
+            play_obj.no_start_end_msg = True
     play_obj.pathfinding_hotkeys(event.key)
     visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE

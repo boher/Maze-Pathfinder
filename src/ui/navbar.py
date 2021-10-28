@@ -2,6 +2,7 @@ import pygame
 import colour
 from .button import Button
 from .drop_down import DropDown
+from .text_object import TextObject
 from states.state import State
 
 
@@ -34,7 +35,13 @@ class NavBar(State):
                 break
 
     def render(self, screen: pygame.surface.Surface) -> None:
+        self.landing_screen()
         self.draw_navbar()
+
+    def landing_screen(self) -> None:
+        if self.instructions:
+            welcome_msg = TextObject(colour.WHITE, "Welcome to Maze-Pathfinder", 55, int(self.length // 4.5))
+            welcome_msg.render(self.screen)
 
     def draw_navbar(self) -> None:
         self.screen.blit(self.nav_rect, self.rect)

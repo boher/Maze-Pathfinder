@@ -50,6 +50,10 @@ class Algos:
             draw()
 
     @staticmethod
+    def no_path() -> bool:
+        return True
+
+    @staticmethod
     def safe_quit() -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

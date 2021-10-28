@@ -2,6 +2,7 @@ import pygame
 import colour
 from typing import Optional
 from ui.button import Button
+from ui.text_object import TextObject
 from .event_handler import InstructionsHandler
 from .hotkeys import HotKeys
 
@@ -12,7 +13,7 @@ class Instructions(HotKeys):
         self.close_btn = Button(720, 180, 30, 30, 10, colour.DARK_RED, colour.RED, "✖", 30)
         self.forward_btn = Button(700, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, ">", 50)
         self.back_btn = Button(210, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, "<", 50)
-        self.font = pygame.font.SysFont('Franklin Gothic Medium', 24)
+        self.font = TextObject(None, "", 24, 0).get_font()
         self.index = 0
 
     def blit_newlines(self, text: str, x: int, y: int) -> None:
