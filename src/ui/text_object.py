@@ -1,10 +1,10 @@
 import pygame
-from typing import Tuple, Union
+from typing import Tuple
 from states.state import State
 
 
 class TextObject(State):
-    def __init__(self, colour: Union[pygame.Color, None], text: str = "", size: int = 0, offset: int = 0) -> None:
+    def __init__(self, colour: pygame.Color, text: str = "", size: int = 0, offset: int = 0) -> None:
         State.__init__(self)
         self.colour = colour
         self.text = text

@@ -43,6 +43,12 @@ class Canvas(NavBar):
             node.update_neighbours(grid)
 
     @staticmethod
+    def reset_open_nodes(grid: list[list[Node]]) -> None:
+        row = chain.from_iterable(grid)
+        for node in row:
+            node.reset()
+
+    @staticmethod
     def reset_node_visited(grid: list[list[Node]], start: Node, end: Node):
         def set_node_unvisited(node):
             node.visited = False

@@ -15,6 +15,7 @@ class HotKeys(Canvas):
         self.path = False
         self.no_path_msg = False
         self.no_start_end_msg = False
+        self.auto_compute = False
         self.speed = 0
         self.grid = self.create_grid()
         self.pathfinding_keys = {
@@ -42,10 +43,15 @@ class HotKeys(Canvas):
             selected_pathfinding = self.pathfinding_keys.get(key_event)
             if selected_pathfinding is not None:
                 pathfinding_algo = selected_pathfinding(lambda: self.draw_canvas(self.grid), self.grid, self.start,
-                                                        self.end, self.speed)
+                                                        self.end, self.speed, self.auto_compute)
                 self.path = pathfinding_algo.execute()
                 self.no_path_msg = pathfinding_algo.no_path() if not self.path else False
                 self.start.set_start()
+
+    def clear_open_nodes(self) -> None:
+        self.auto_compute = True
+        if not self.start and not self.end:
+            self.reset_open_nodes(self.grid)
 
     def clearing_keys(self, key_event: int) -> None:
         if key_event == pygame.K_z:

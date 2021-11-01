@@ -13,7 +13,7 @@ class Instructions(HotKeys):
         self.close_btn = Button(720, 180, 30, 30, 10, colour.DARK_RED, colour.RED, "✖", 30)
         self.forward_btn = Button(700, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, ">", 50)
         self.back_btn = Button(210, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, "<", 50)
-        self.font = TextObject(None, "", 24, 0).get_font()
+        self.font = TextObject(colour.BLACK, "", 24, 0).get_font()
         self.index = 0
 
     def blit_newlines(self, text: str, x: int, y: int) -> None:

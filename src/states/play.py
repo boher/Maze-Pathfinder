@@ -14,6 +14,8 @@ class Play(Instructions):
         self.double_click = 200
         self.hold = False
         self.erase = False
+        self.drag_start = False
+        self.drag_end = False
         self.clock = pygame.time.Clock()
 
     def divider(self) -> None:

@@ -16,8 +16,9 @@ class Dijkstras(Algos):
     Return: True if path found, false if no possible path
     """
 
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int) -> None:
-        Algos.__init__(self, draw, grid, start, end, speed)
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
+                 auto_compute: bool) -> None:
+        Algos.__init__(self, draw, grid, start, end, speed, auto_compute)
         self.curr_distance = 0
         # Assume node is infinity distance away from compared node
         self.distances = {node: float("inf") for row in self.grid for node in row}
@@ -36,7 +37,8 @@ class Dijkstras(Algos):
                 continue
 
             distance = self.curr_distance + 1
-            self.set_speed()
+            if not self.auto_compute:
+                self.set_speed()
 
             # Estimated distance of surrounding nodes less than assumed surrounding nodes of infinity distance,
             # then increment the actual current distance by 1 aft. visiting surrounding nodes
@@ -64,7 +66,8 @@ class Dijkstras(Algos):
                 continue
 
             self.compare_neighbours(current)
-            self.draw()
+            if not self.auto_compute:
+                self.draw()
 
             # Current node indicated as traversed, hence not included in open set anymore
             self.put_closed_set(current)

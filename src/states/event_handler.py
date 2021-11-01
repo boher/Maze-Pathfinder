@@ -101,24 +101,54 @@ def double_left_click(play_obj: 'Play', event: pygame.event.Event) -> None:
     node = play_obj.node_pos()
     latest_click = pygame.time.get_ticks()
     if event.button == left_button and node is not None:
+        if node.get_start():
+            play_obj.drag_start = True
+        elif node.get_end():
+            play_obj.drag_end = True
         if latest_click - play_obj.timer <= play_obj.double_click:
             play_obj.start_end_nodes(node)
         play_obj.timer = latest_click
 
 
 @EventHandler.register(pygame.MOUSEMOTION)
+def start_end_click_drag(play_obj: 'Play', *_) -> None:
+    node = play_obj.node_pos()
+    pathfinding_active_option = play_obj.pathfinding_options.active_option
+    if play_obj.hold and node is not None and not node.get_wall() and not play_obj.erase:
+        if play_obj.drag_start and play_obj.start is not None and node != play_obj.end:
+            play_obj.start.reset()
+            play_obj.start = node
+            play_obj.start.set_start()
+        elif play_obj.drag_end and play_obj.end is not None and node != play_obj.start:
+            play_obj.end.reset()
+            play_obj.end = node
+            play_obj.end.set_end()
+        if play_obj.path:
+            play_obj.clear_open_nodes()
+            if play_obj.auto_compute:
+                play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
+
+
+@EventHandler.register(pygame.MOUSEMOTION)
 def click_drag(play_obj: 'Play', *_) -> None:
     node = play_obj.node_pos()
+    pathfinding_active_option = play_obj.pathfinding_options.active_option
     if play_obj.hold and node is not None:
         if play_obj.erase:
             play_obj.clear_nodes(node)
-        else:
+        elif not play_obj.drag_start and not play_obj.drag_end:
             play_obj.wall_nodes(node)
+        if play_obj.path and play_obj.auto_compute:
+            play_obj.clear_open_nodes()
+            play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
 
 
 @EventHandler.register(pygame.MOUSEBUTTONUP)
 def stop_click_drag(play_obj: 'Play', *_) -> None:
     play_obj.hold = False
+    play_obj.auto_compute = False
+    play_obj.drag_start = False
+    play_obj.drag_end = False
 
 
 @EventHandler.register(pygame.MOUSEMOTION)
@@ -236,7 +266,7 @@ def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button'
     return algo_options.clicked()
 
 
-def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event):
+def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event) -> None:
     visualize_btn = play_obj.visualize_btn
     pathfinding_btn = play_obj.pathfinding_options.main
     visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA

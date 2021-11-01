@@ -5,12 +5,14 @@ from ui.node import Node
 
 
 class Algos:
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int) -> None:
+    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
+                 auto_compute: bool) -> None:
         self.draw = draw
         self.grid = grid
         self.start = start
         self.end = end
         self.speed = speed
+        self.auto_compute = auto_compute
         self.came_from: dict[Node, Node] = {}
         self.heuristics = 0
         # Implemented using binary heap, get the smallest element every execution
@@ -46,8 +48,9 @@ class Algos:
         while current in came_from:
             current = came_from[current]
             current.set_path()
-            self.set_speed()
-            draw()
+            if not self.auto_compute:
+                self.set_speed()
+                draw()
 
     @staticmethod
     def no_path() -> bool:
