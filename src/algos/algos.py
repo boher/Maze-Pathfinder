@@ -15,6 +15,7 @@ class Algos:
         self.auto_compute = auto_compute
         self.came_from: dict[Node, Node] = {}
         self.heuristics = 0
+        self.bomb_path: list[Node] = []
         # Implemented using binary heap, get the smallest element every execution
         self.open_set: PriorityQueue[Any[Tuple[int, int, Node]]] = PriorityQueue()
         self.queue: Queue[Node] = Queue()
@@ -43,7 +44,6 @@ class Algos:
     3rd param: nodes drawn
     No return
     """
-
     def optimal_path(self, came_from: dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
         while current in came_from:
             current = came_from[current]
@@ -51,6 +51,33 @@ class Algos:
             if not self.auto_compute:
                 self.set_speed()
                 draw()
+
+    def append_bomb_path(self, came_from: dict[Node, Node], current: Node) -> None:
+        while current in came_from:
+            current = came_from[current]
+            self.bomb_path.append(current)
+
+    def optimal_bomb_path(self, draw: Callable[[], None], full_path: list[Node]) -> None:
+        for current in full_path:
+            if not current.get_start() and not current.get_end() and not self.is_bomb(current):
+                current.set_path()
+                if not self.auto_compute:
+                    self.set_speed()
+                    draw()
+
+    def completed_path(self, came_from: dict[Node, Node], start: Node, end: Node, draw: Callable[[], None]) -> None:
+        if self.is_bomb(self.start) or self.is_bomb(self.end):
+            self.append_bomb_path(came_from, end)
+        else:
+            self.optimal_path(came_from, end, draw)
+            start.set_start()
+
+    @staticmethod
+    def is_bomb(node: Node) -> bool:
+        if isinstance(node.colour, pygame.Surface):
+            return True
+        else:
+            return False
 
     @staticmethod
     def no_path() -> bool:
@@ -73,5 +100,8 @@ class Algos:
         raise NotImplementedError
 
     def put_closed_set(self, current: Node) -> None:
-        if current != self.start:
-            current.set_closed()
+        if current != self.start and not current.get_end():
+            if self.is_bomb(self.start):
+                current.set_bomb_closed() if not current.get_start() else None
+            else:
+                current.set_closed()

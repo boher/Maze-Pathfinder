@@ -7,11 +7,13 @@ class DepthFS(Algos):
     """
     DFS Algorithm, unweighted and finds a path from start to the end node. Shortest path NOT guaranteed
     Uses a stack to store nodes since DFS is unweighted
-    Once end node has been reached, backtracks using the came_from hash map to reconstruct the path
+    Once end node has been reached, backtracks using the came_from dict to reconstruct the path
     1st param: Draws visualizations onto canvas
     2nd param: Canvas grid being used
     3rd param: Start node
     4th param: End node
+    5th param: Visualization speed
+    6th param: Automatically compute traversed path
     Return: True if path is completed, false if no possible path
     """
 
@@ -53,7 +55,7 @@ class DepthFS(Algos):
             current = self.stack.get()
 
             if current == self.end:
-                self.optimal_path(self.came_from, self.end, self.draw)
+                self.completed_path(self.came_from, self.start, self.end, self.draw)
                 return True
 
             current.update_nonvisited(self.grid)

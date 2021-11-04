@@ -105,6 +105,8 @@ def double_left_click(play_obj: 'Play', event: pygame.event.Event) -> None:
             play_obj.drag_start = True
         elif node.get_end():
             play_obj.drag_end = True
+        elif isinstance(node.get_bomb(), pygame.Surface):
+            play_obj.drag_bomb = True
         if latest_click - play_obj.timer <= play_obj.double_click:
             play_obj.start_end_nodes(node)
         play_obj.timer = latest_click
@@ -130,13 +132,23 @@ def start_end_click_drag(play_obj: 'Play', *_) -> None:
 
 
 @EventHandler.register(pygame.MOUSEMOTION)
+def bomb_click_drag(play_obj: 'Play', *_) -> None:
+    node = play_obj.node_pos()
+    if play_obj.hold and node is not None and not node.get_wall() and not play_obj.erase:
+        if play_obj.drag_bomb and play_obj.bomb and node != play_obj.start and node != play_obj.end:
+            play_obj.bomb.reset()
+            play_obj.bomb = node
+            play_obj.bomb.set_bomb()
+
+
+@EventHandler.register(pygame.MOUSEMOTION)
 def click_drag(play_obj: 'Play', *_) -> None:
     node = play_obj.node_pos()
     pathfinding_active_option = play_obj.pathfinding_options.active_option
     if play_obj.hold and node is not None:
         if play_obj.erase:
             play_obj.clear_nodes(node)
-        elif not play_obj.drag_start and not play_obj.drag_end:
+        elif not play_obj.drag_start and not play_obj.drag_end and not play_obj.drag_bomb:
             play_obj.wall_nodes(node)
         if play_obj.path and play_obj.auto_compute:
             play_obj.clear_open_nodes()
@@ -149,6 +161,7 @@ def stop_click_drag(play_obj: 'Play', *_) -> None:
     play_obj.auto_compute = False
     play_obj.drag_start = False
     play_obj.drag_end = False
+    play_obj.drag_bomb = False
 
 
 @EventHandler.register(pygame.MOUSEMOTION)
@@ -184,6 +197,20 @@ def draw_state(play_obj: 'Play', event: pygame.event.Event) -> None:
         if erase_btn.clicked():
             play_obj.erase = True
             erase_btn.colour, draw_btn.colour = erase_btn.hover_colour, colour.BLUE_GREY
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def bomb_state(play_obj: 'Play', event: pygame.event.Event) -> None:
+    left_button = 1
+    bomb_btn = play_obj.bomb_btn
+    if event.button == left_button and bomb_btn.clicked():
+        play_obj.hold = True
+        if bomb_btn.text != play_obj.bomb_default_text and play_obj.bomb:
+            play_obj.clear_nodes(play_obj.bomb)
+            bomb_btn.text = play_obj.bomb_default_text
+        else:
+            play_obj.bomb_node()
+            bomb_btn.text = "Remove 💣"
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)

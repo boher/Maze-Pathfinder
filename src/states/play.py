@@ -1,4 +1,5 @@
 import pygame
+from random import randrange
 from typing import Optional
 from .event_handler import EventHandler
 from .instructions import Instructions
@@ -16,6 +17,7 @@ class Play(Instructions):
         self.erase = False
         self.drag_start = False
         self.drag_end = False
+        self.drag_bomb = False
         self.clock = pygame.time.Clock()
 
     def divider(self) -> None:
@@ -41,8 +43,17 @@ class Play(Instructions):
             self.end.set_end()
 
     def wall_nodes(self, node: Node) -> None:
-        if node != self.start and node != self.end:
+        if node != self.start and node != self.end and node != self.bomb:
             node.set_wall()
+
+    def bomb_node(self) -> None:
+        node = self.grid[self.rows // 2][self.cols // 2]
+        while node is self.start or node is self.end or node.get_wall():
+            rand_row = randrange(self.nav_height, self.rows)
+            rand_col = randrange(self.nav_height, self.cols)
+            node = self.grid[rand_row][rand_col]
+        self.bomb = node
+        self.bomb.set_bomb()
 
     def clear_nodes(self, node) -> None:
         node.reset()
@@ -50,6 +61,9 @@ class Play(Instructions):
             self.start = None
         elif node is self.end:
             self.end = None
+        elif node is self.bomb:
+            self.bomb = None
+            self.bomb_btn.text = self.bomb_default_text
 
     def get_events(self) -> None:
         while self.run:

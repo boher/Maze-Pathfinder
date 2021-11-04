@@ -15,6 +15,8 @@ class AStar(Algos):
     2nd param: Canvas grid being used
     3rd param: Start node
     4th param: End node
+    5th param: Visualization speed
+    6th param: Automatically compute traversed path
     Return: True if path is completed, false if no possible path
     """
 
@@ -77,7 +79,7 @@ class AStar(Algos):
             self.open_set_hash.remove(current)
 
             if current == self.end:
-                self.optimal_path(self.came_from, self.end, self.draw)
+                self.completed_path(self.came_from, self.start, self.end, self.draw)
                 return True
 
             self.compare_neighbours(current)

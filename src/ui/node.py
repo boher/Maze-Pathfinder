@@ -28,6 +28,9 @@ class Node:
     def get_wall(self) -> bool:
         return self.colour == colour.BLACK  # Construct blocking nodes (walls)
 
+    def get_bomb_closed(self) -> bool:
+        return self.colour == colour.AQUAMARINE  # Traversed nodes, bomb_to_end
+
     def get_start(self) -> bool:
         return self.colour == colour.GREEN  # Start node
 
@@ -36,6 +39,9 @@ class Node:
 
     def btwn_wall(self, pos: int) -> bool:
         return self.walls[pos]
+
+    def get_bomb(self) -> pygame.Color:
+        return self.colour  # Bomb node
 
     @property
     def visited(self) -> bool:
@@ -54,11 +60,19 @@ class Node:
     def set_end(self) -> None:
         self.colour = colour.RED
 
+    def set_bomb(self) -> None:
+        font = pygame.font.SysFont('SegoeUISymbol', self.length)
+        text_surf = font.render("💣", True, colour.BLACK)
+        self.colour = text_surf  # type: ignore
+
     def set_open(self) -> None:
         self.colour = colour.BLUE
 
     def set_closed(self) -> None:
         self.colour = colour.TURQUOISE
+
+    def set_bomb_closed(self) -> None:
+        self.colour = colour.AQUAMARINE
 
     def set_wall(self) -> None:
         self.colour = colour.BLACK
@@ -67,7 +81,12 @@ class Node:
         self.colour = colour.MAGENTA
 
     def draw(self, screen: pygame.surface.Surface) -> None:
-        pygame.draw.rect(screen, self.colour, (self.x, self.y, self.length, self.length))
+        # self.colour used to init bomb symbol as new class field will not draw and remove bomb
+        if self.get_bomb() and isinstance(self.colour, pygame.Surface):
+            pygame.draw.rect(screen, colour.WHITE, (self.x, self.y, self.length, self.length))
+            screen.blit(self.colour, (self.x, self.y - 1.5))
+        else:
+            pygame.draw.rect(screen, self.colour, (self.x, self.y, self.length, self.length))
 
     """
     Get neighbours from a given node, regardless if visited or not visited

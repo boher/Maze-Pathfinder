@@ -1,7 +1,7 @@
 import pygame
 import colour
 from itertools import chain
-from typing import Tuple
+from typing import Optional, Tuple
 from .navbar import NavBar  # State > NavBar > Canvas > HotKeys > Instructions > Play, EventHandler init play obj
 from .node import Node
 
@@ -49,19 +49,17 @@ class Canvas(NavBar):
             node.reset()
 
     @staticmethod
-    def reset_node_visited(grid: list[list[Node]], start: Node, end: Node):
-        def set_node_unvisited(node):
-            node.visited = False
+    def reset_node_visited(grid: list[list[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
-            if node is not start or not end:
-                set_node_unvisited(node)
+            if node is not start or not end or not bomb:
+                node.visited = False
 
-    def reset_traversed_path(self, grid: list[list[Node]], start: Node, end: Node) -> None:
-        self.reset_node_visited(grid, start, end)
+    def reset_traversed_path(self, grid: list[list[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
+        self.reset_node_visited(grid, start, end, bomb)
         row = chain.from_iterable(grid)
         for node in row:
-            if node.colour in (colour.BLUE, colour.TURQUOISE, colour.MAGENTA):
+            if node.colour in (colour.BLUE, colour.TURQUOISE, colour.AQUAMARINE, colour.MAGENTA):
                 node.reset()
 
     @staticmethod

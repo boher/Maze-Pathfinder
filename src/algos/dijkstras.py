@@ -8,12 +8,14 @@ class Dijkstras(Algos):
     Dijkstra's Algorithm, weighted and guaranteed to be the shortest path
     Choosing the lowest distance node from start node by visiting all possible nodes,
     stored in a PriorityQueue until end node is found
-    Once end node has been reached, backtracks using came_from dict to reconstruct the path
+    Once end node has been reached, backtracks using the came_from dict to reconstruct the path
     1st param: Draws visualization onto canvas
     2nd param: Canvas grid being used
     3rd param: Start node
     4th param: End node
-    Return: True if path found, false if no possible path
+    5th param: Visualization speed
+    6th param: Automatically compute traversed path
+    Return: True if path is completed, false if no possible path
     """
 
     def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
@@ -58,7 +60,7 @@ class Dijkstras(Algos):
             self.curr_distance, current = self.open_set.get()
 
             if current == self.end:
-                self.optimal_path(self.came_from, self.end, self.draw)
+                self.completed_path(self.came_from, self.start, self.end, self.draw)
                 return True
 
             # Current distance from visited surrounding nodes compared to current node

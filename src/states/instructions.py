@@ -39,10 +39,11 @@ class Instructions(HotKeys):
             1: "Top right buttons to select between draw and erase\n"
                "Double left-click: Draw the start node, then the end\n"
                "node (required to visualize pathfinding algorithm)\n"
-               "Left-click and drag: Draw walls or erase\n"
+               "Left-click and drag: Move nodes, draw walls or erase\n"
+               "Bomb: Pathfinding algorithm will find the bomb first\n"
                f"{'[Z]':>25}: Clear the path\n"
                f"{'[X]':>25}: Clear the walls\n"
-               f"{'[C]':>25}: Clear the canvas\n",
+               f"{'[C]':>25}: Clear the canvas",
 
             2: f"{'Pathfinding':>35} Algorithms\n"
                "\nExecute via dropdown menu in navbar or hotkeys\n"
@@ -63,7 +64,6 @@ class Instructions(HotKeys):
             buttons = [self.close_btn, self.forward_btn, self.back_btn]
             for button in buttons:
                 button.render(self.screen)
-            # Popup helper instructions to play
             self.blit_newlines(f"INSTRUCTIONS TO PLAY\n{self.get_instructions()}\n{'[H]':>25}: Open this helper again",
                                int(self.length // 2.7), int(self.width // 3.5))
             pygame.display.update()

@@ -9,10 +9,11 @@ from states.state import State
 class NavBar(State):
     def __init__(self) -> None:
         State.__init__(self)
+        self.bomb_default_text = "Add a 💣"
         self.helper_btn = Button(10, 5, 22, 48, 10, colour.OFF_WHITE, colour.RED, "H", 20)
         self.draw_btn = Button(840, 5, 50, 48, 10, colour.BLUE_GREY, colour.BLUE, "✏", 45)
         self.erase_btn = Button(900, 5, 50, 48, 10, colour.BLUE_GREY, colour.BLUE, "❒", 45)
-        self.bomb_btn = Button(720, 5, 110, 48, 10, colour.BLUE_GREY, colour.BLUE, "Add a 💣", 20)
+        self.bomb_btn = Button(720, 5, 110, 48, 10, colour.BLUE_GREY, colour.BLUE, self.bomb_default_text, 20)
         self.clear_options = DropDown(Button(610, 10, 100, 38, 10, colour.PURPLE, colour.BLUE, "Clear...", 15),
                                       ["Clear Path", "Clear Walls", "Clear Canvas"])
         self.speed_options = DropDown(Button(550, 10, 50, 38, 10, colour.PURPLE, colour.BLUE, "Speed", 15),
