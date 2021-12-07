@@ -1,6 +1,6 @@
 import pygame
 import colour
-from typing import Callable, Dict, TYPE_CHECKING, TypeVar, Union
+from typing import Callable, Dict, List, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:  # Avoid circular imports
     from .instructions import Instructions
@@ -13,13 +13,12 @@ PATHFINDING_KEY_OFFSET = 49
 
 
 class InstructionsHandler:
-    R = TypeVar("R")
     instructions_registry: Dict[
-        Union[int, list[Callable[..., 'Instructions']]], list[Callable[..., pygame.event.Event]]] = {}
+        Union[int, List[Callable[..., 'Instructions']]], List[Callable[..., pygame.event.Event]]] = {}
 
     @staticmethod
-    def register(event_type: int) -> Callable[..., R]:
-        def decorator(func):
+    def register(event_type: int) -> Callable[..., None]:
+        def decorator(func: Callable[..., pygame.event.Event]) -> None:
             InstructionsHandler.instructions_registry.setdefault(event_type, []).append(func)
 
         return decorator
@@ -59,12 +58,11 @@ def helper_click_actions(instructions: 'Instructions', event: pygame.event.Event
 
 
 class EventHandler:
-    R = TypeVar("R")
-    event_handler_registry: Dict[Union[int, list[Callable[..., 'Play']]], list[Callable[..., pygame.event.Event]]] = {}
+    event_handler_registry: Dict[Union[int, List[Callable[..., 'Play']]], List[Callable[..., pygame.event.Event]]] = {}
 
     @staticmethod
-    def register(event_type: int) -> Callable[..., R]:
-        def decorator(func):
+    def register(event_type: int) -> Callable[..., None]:
+        def decorator(func: Callable[..., pygame.event.Event]) -> None:
             EventHandler.event_handler_registry.setdefault(event_type, []).append(func)
 
         return decorator

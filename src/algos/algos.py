@@ -1,11 +1,11 @@
 import pygame
 from queue import PriorityQueue, LifoQueue, Queue
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 from ui.node import Node
 
 
 class Algos:
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
+    def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
                  auto_compute: bool) -> None:
         self.draw = draw
         self.grid = grid
@@ -13,9 +13,9 @@ class Algos:
         self.end = end
         self.speed = speed
         self.auto_compute = auto_compute
-        self.came_from: dict[Node, Node] = {}
+        self.came_from: Dict[Node, Node] = {}
         self.heuristics = 0
-        self.bomb_path: list[Node] = []
+        self.bomb_path: List[Node] = []
         # Implemented using binary heap, get the smallest element every execution
         self.open_set: PriorityQueue[Any[Tuple[int, int, Node]]] = PriorityQueue()
         self.queue: Queue[Node] = Queue()
@@ -44,7 +44,7 @@ class Algos:
     3rd param: nodes drawn
     No return
     """
-    def optimal_path(self, came_from: dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
+    def optimal_path(self, came_from: Dict[Node, Node], current: Node, draw: Callable[[], None]) -> None:
         while current in came_from:
             current = came_from[current]
             current.set_path()
@@ -52,12 +52,12 @@ class Algos:
                 self.set_speed()
                 draw()
 
-    def append_bomb_path(self, came_from: dict[Node, Node], current: Node) -> None:
+    def append_bomb_path(self, came_from: Dict[Node, Node], current: Node) -> None:
         while current in came_from:
             current = came_from[current]
             self.bomb_path.append(current)
 
-    def optimal_bomb_path(self, draw: Callable[[], None], full_path: list[Node]) -> None:
+    def optimal_bomb_path(self, draw: Callable[[], None], full_path: List[Node]) -> None:
         for current in full_path:
             if not current.get_start() and not current.get_end() and not self.is_bomb(current):
                 current.set_path()
@@ -65,7 +65,7 @@ class Algos:
                     self.set_speed()
                     draw()
 
-    def completed_path(self, came_from: dict[Node, Node], start: Node, end: Node, draw: Callable[[], None]) -> None:
+    def completed_path(self, came_from: Dict[Node, Node], start: Node, end: Node, draw: Callable[[], None]) -> None:
         if self.is_bomb(self.start) or self.is_bomb(self.end):
             self.append_bomb_path(came_from, end)
         else:

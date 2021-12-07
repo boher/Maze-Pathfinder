@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List, Set
 from algos.algos import Algos
 from ui.node import Node
 
@@ -20,11 +20,11 @@ class AStar(Algos):
     Return: True if path is completed, false if no possible path
     """
 
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
+    def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
                  auto_compute: bool) -> None:
         Algos.__init__(self, draw, grid, start, end, speed, auto_compute)
         self.count = 0
-        self.open_set_hash: set[Node] = set()
+        self.open_set_hash: Set[Node] = set()
         # Assume node is infinity distance away from compared node
         # (actual weighted path score & own est. weighted path score, since it's G(n) + H(n))
         self.g_score = {node: float("inf") for row in grid for node in row}

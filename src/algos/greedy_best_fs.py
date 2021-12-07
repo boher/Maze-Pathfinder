@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 from algos.algos import Algos
 from ui.node import Node
 
@@ -16,7 +16,7 @@ class GreedyBestFS(Algos):
     6th param: Automatically compute traversed path
     Return: True if path is completed, false if no possible path
     """
-    def __init__(self, draw: Callable[[], None], grid: list[list[Node]], start: Node, end: Node, speed: int,
+    def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
                  auto_compute: bool) -> None:
         Algos.__init__(self, draw, grid, start, end, speed, auto_compute)
 

@@ -1,7 +1,7 @@
 import pygame
 import colour
 from itertools import chain
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 from .navbar import NavBar  # State > NavBar > Canvas > HotKeys > Instructions > Play, EventHandler init play obj
 from .node import Node
 
@@ -14,7 +14,7 @@ class Canvas(NavBar):
         self.nav_height = 3
         self.gap = self.width // self.rows
 
-    def create_grid(self) -> list[list[Node]]:
+    def create_grid(self) -> List[List[Node]]:
         grid = [[Node(row, col, self.gap, (self.rows, self.cols)) for col in range(self.cols)] for row in
                 range(self.rows)]
         return grid
@@ -26,7 +26,7 @@ class Canvas(NavBar):
                 pygame.draw.line(self.screen, colour.DARK_GREY, (col * self.gap, (self.nav_height * self.gap)),
                                  (col * self.gap, self.width))
 
-    def draw_canvas(self, grid: list[list[Node]]) -> None:
+    def draw_canvas(self, grid: List[List[Node]]) -> None:
         self.screen.fill(colour.WHITE)
         row = chain.from_iterable(grid)
         for node in row:
@@ -37,25 +37,25 @@ class Canvas(NavBar):
         pygame.display.update()
 
     @staticmethod
-    def node_traversal(grid: list[list[Node]]) -> None:
+    def node_traversal(grid: List[List[Node]]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
             node.update_neighbours(grid)
 
     @staticmethod
-    def reset_open_nodes(grid: list[list[Node]]) -> None:
+    def reset_open_nodes(grid: List[List[Node]]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
             node.reset()
 
     @staticmethod
-    def reset_node_visited(grid: list[list[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
+    def reset_node_visited(grid: List[List[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
             if node is not start or not end or not bomb:
                 node.visited = False
 
-    def reset_traversed_path(self, grid: list[list[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
+    def reset_traversed_path(self, grid: List[List[Node]], start: Node, end: Node, bomb: Optional[Node]) -> None:
         self.reset_node_visited(grid, start, end, bomb)
         row = chain.from_iterable(grid)
         for node in row:
@@ -63,7 +63,7 @@ class Canvas(NavBar):
                 node.reset()
 
     @staticmethod
-    def reset_walls(grid: list[list[Node]]) -> None:
+    def reset_walls(grid: List[List[Node]]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
             if node.get_wall():

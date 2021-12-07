@@ -1,6 +1,6 @@
 import pygame
 import colour
-from typing import Tuple
+from typing import List, Tuple
 
 
 class Node:
@@ -12,7 +12,7 @@ class Node:
         self.y = row * length
         self.total_rows, self.total_cols = dimensions
         self.colour = colour.WHITE
-        self.neighbours: list['Node'] = []
+        self.neighbours: List['Node'] = []
         self._visited = False
         self.walls = [False, False, False, False]  # up, down, left, right
 
@@ -93,7 +93,7 @@ class Node:
     2nd param canvas: Canvas grid displayed
     Return: Traversed nodes for pathfinding
     """
-    def update_neighbours(self, grid: list[list['Node']]) -> None:
+    def update_neighbours(self, grid: List[List['Node']]) -> None:
         self.neighbours = []
         # (Up) Not @ row 0 & grid is not a wall (w/ cont. stmts in the algo functions), append previous row but same col
         if self.row > 0:
@@ -119,7 +119,7 @@ class Node:
     Return: Non-visited neighbours
     NOTE: .get_wall() for Dijkstra's & A*, get_visited() for Greedy Best-FS, Breadth-FS & Depth-FS
     """
-    def update_nonvisited(self, grid: list[list['Node']]) -> None:
+    def update_nonvisited(self, grid: List[List['Node']]) -> None:
         self.neighbours = []
         # (Up) Not @ row 0 & node is untraversed, append previous row but same col
         if self.row > 0 and not grid[self.row - 1][self.col].visited:

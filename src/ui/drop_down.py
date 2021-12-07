@@ -1,12 +1,12 @@
 import pygame
 import copy
-from typing import Union
+from typing import List, Union
 from .button import Button
 from states.state import State
 
 
 class DropDown(Button, State):
-    def __init__(self, button: Button, options: list[str]) -> None:
+    def __init__(self, button: Button, options: List[str]) -> None:
         super().__init__(button.x, button.y, button.width, button.height, button.radius, button.colour,
                          button.hover_colour, button.text, button.size)
         State.__init__(self)
