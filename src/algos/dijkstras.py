@@ -5,17 +5,20 @@ from ui.node import Node
 
 class Dijkstras(Algos):
     """
-    Dijkstra's Algorithm, weighted and guaranteed to be the shortest path
-    Choosing the lowest distance node from start node by visiting all possible nodes,
-    stored in a PriorityQueue until end node is found
-    Once end node has been reached, backtracks using the came_from dict to reconstruct the path
-    1st param: Draws visualization onto canvas
-    2nd param: Canvas grid being used
-    3rd param: Start node
-    4th param: End node
-    5th param: Visualization speed
-    6th param: Automatically compute traversed path
-    Return: True if path is completed, false if no possible path
+    Dijkstra's Algorithm, weighted BFS and finds the shortest path
+    Uses a priority queue to store node with the lowest distance cost following from start node
+
+    Attributes:
+        curr_distance: An integer to estimate the cost to traverse to end node from current node
+        distances: Estimated weighted distance of node
+
+    Args:
+        draw: Draws visualizations onto canvas
+        grid: Canvas grid being used
+        start: Start node
+        end: End node
+        speed: Visualization speed
+        auto-compute: Automatically compute traversed path
     """
 
     def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
@@ -26,15 +29,21 @@ class Dijkstras(Algos):
         self.distances = {node: float("inf") for row in self.grid for node in row}
 
     def put_open_set(self) -> None:
-        # Put all surrounding lowest distance nodes
+        """Put all surrounding lowest distance nodes"""
         self.open_set.put((0, self.start))
         self.distances[self.start] = 0
         self.start.update_neighbours(self.grid)
 
     def compare_neighbours(self, current: Node) -> None:
-        # Neighbour nodes surrounding current node
+        """
+        Iterates through the neighbour nodes surrounding current node, where its estimated distance of surrounding nodes
+        should be less than assumed surrounding nodes of infinity distance
+        NOTE: Neighbour nodes that are walls will not be traversed
+
+        Args:
+            current: Current node following from the start node
+        """
         for neighbour in current.neighbours:
-            # Do not traverse over neighbour nodes that are walls
             if neighbour.get_wall():
                 continue
 
@@ -42,8 +51,6 @@ class Dijkstras(Algos):
             if not self.auto_compute:
                 self.set_speed()
 
-            # Estimated distance of surrounding nodes less than assumed surrounding nodes of infinity distance,
-            # then increment the actual current distance by 1 aft. visiting surrounding nodes
             if distance < self.distances[neighbour]:
                 self.came_from[neighbour] = current
                 self.curr_distance += 1
@@ -53,6 +60,13 @@ class Dijkstras(Algos):
                     neighbour.set_open()
 
     def execute(self) -> bool:
+        """
+        Tracking nodes in priority queue by getting untraversed node with the lowest cost
+
+        Returns:
+            True if path has been found
+            False if no possible path
+        """
         self.put_open_set()
 
         while not self.open_set.empty():
@@ -63,7 +77,7 @@ class Dijkstras(Algos):
                 self.completed_path(self.came_from, self.start, self.end, self.draw)
                 return True
 
-            # Current distance from visited surrounding nodes compared to current node
+            # To ensure distance of current node should be less than current distance from visited surrounding nodes
             if self.curr_distance > self.distances[current]:
                 continue
 
@@ -71,6 +85,5 @@ class Dijkstras(Algos):
             if not self.auto_compute:
                 self.draw()
 
-            # Current node indicated as traversed, hence not included in open set anymore
             self.put_closed_set(current)
         return False

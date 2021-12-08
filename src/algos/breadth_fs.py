@@ -5,16 +5,16 @@ from ui.node import Node
 
 class BreadthFS(Algos):
     """
-    BFS Algorithm, unweighted and guaranteed to be the shortest path
-    Uses a queue to store nodes since BFS is unweighted
-    Once end node has been reached, backtracks using the came_from dict to reconstruct the path
-    1st param: Draws visualizations onto canvas
-    2nd param: Canvas grid being used
-    3rd param: Start node
-    4th param: End node
-    5th param: Visualization speed
-    6th param: Automatically compute traversed path
-    Return: True if path is completed, false if no possible path
+    Breadth First Search (BFS) Algorithm, unweighted and finds the shortest path
+    Uses a queue to store untraveresed but visited nodes
+
+    Args:
+        draw: Draws visualizations onto canvas
+        grid: Canvas grid being used
+        start: Start node
+        end: End node
+        speed: Visualization speed
+        auto-compute: Automatically compute traversed path
     """
 
     def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
@@ -22,23 +22,25 @@ class BreadthFS(Algos):
         Algos.__init__(self, draw, grid, start, end, speed, auto_compute)
 
     def put_open_set(self) -> None:
-        # Put all surrounding nodes
+        """Put start node as the 1st in queue and mark it as visited = True"""
         self.queue.put(self.start)
-        # Mark start node as visited = True, since it would always be the 1st node placed in queue
         self.start.visited = True
 
     def compare_neighbours(self, current: Node) -> None:
-        # Neighbour nodes surrounding current node
+        """
+        Iterates through the unvisited neighbour nodes surrounding current node, then marking them as visited
+        NOTE: Neighbour nodes that are walls will not be traversed
+
+        Args:
+            current: Current node following from the start node
+        """
         for neighbour in current.neighbours:
-            # Do not traverse over neighbour nodes that are walls
             if neighbour.get_wall():
                 continue
 
             if not self.auto_compute:
                 self.set_speed()
 
-            # Mark neighbour node visited as True, then subsequently compared to the current node,
-            # which will put any surrounding unvisited neighbours
             neighbour.visited = True
             self.came_from[neighbour] = current
             self.queue.put(neighbour)
@@ -46,12 +48,18 @@ class BreadthFS(Algos):
                 neighbour.set_open()
 
     def execute(self) -> bool:
+        """
+        Tracking nodes in queue by getting untraversed node based on FIFO principle
+
+        Returns:
+            True if path has been found
+            False if no possible path
+        """
         self.put_open_set()
 
         while not self.queue.empty():
             self.safe_quit()
 
-            # Get node based on FIFO
             current = self.queue.get()
 
             if current == self.end:
@@ -63,6 +71,5 @@ class BreadthFS(Algos):
             if not self.auto_compute:
                 self.draw()
 
-            # Current node indicated as traversed, hence not included in open set
             self.put_closed_set(current)
         return False
