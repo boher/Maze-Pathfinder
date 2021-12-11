@@ -2,7 +2,7 @@ import pytest
 import colour
 import random
 from itertools import chain
-from typing import Any, List, Tuple
+from typing import Any, Generator, List, Tuple
 from pytest_mock import MockerFixture
 from pygame import surface
 from ui.node import Node
@@ -33,7 +33,8 @@ class TestCanvas:
     def test_create_grid(self, canvas: Canvas) -> None:
         assert canvas.create_grid()
 
-    def test_draw_canvas(self, canvas: Canvas, grid: List[List[Node]], test_surface: surface.Surface, mocker: MockerFixture) -> None:
+    def test_draw_canvas(self, canvas: Canvas, grid: List[List[Node]], test_surface: surface.Surface,
+                         mocker: MockerFixture) -> None:
         canvas.screen = test_surface
         mocker.patch('pygame.draw.line')
         canvas.draw_canvas(grid)
@@ -52,30 +53,33 @@ class TestCanvas:
         for node in row:
             assert node.reset
 
-    def test_reset_node_visited(self, canvas: Canvas, grid: List[List[Node]], mocker: MockerFixture) -> None:
-        start = mocker.Mock(spec=Node)
-        end = mocker.Mock(spec=Node)
-        bomb = mocker.Mock(spec=Node)
+    def test_reset_node_visited(self, canvas: Canvas, grid: List[List[Node]], random_node: Generator[Node, None, None]) -> None:
+        start = next(random_node)
+        end = next(random_node)
+        bomb = next(random_node)
         canvas.reset_node_visited(grid, start, end, bomb)
         row = chain.from_iterable(grid)
         for node in row:
             if node is not start or node is not end or node is not bomb:
                 assert node.visited is False
 
-    def test_reset_traversed_path(self, canvas: Canvas, grid: List[List[Node]], mocker: MockerFixture) -> None:
-        start = mocker.Mock(spec=Node)
-        end = mocker.Mock(spec=Node)
-        bomb = mocker.Mock(spec=Node)
+    def test_reset_traversed_path(self, canvas: Canvas, grid: List[List[Node]], random_node: Generator[Node, None, None]) -> None:
+        start = next(random_node)
+        end = next(random_node)
+        bomb = next(random_node)
+        grid = self.get_mock_traversed_node(grid)
         row = chain.from_iterable(grid)
-        for node in row:
-            node.colour = colour.MAGENTA
         canvas.reset_traversed_path(grid, start, end, bomb)
+        for node in row:
+            assert node.reset
 
     def test_reset_walls(self, canvas: Canvas, grid: List[List[Node]]) -> None:
         row = chain.from_iterable(grid)
         for node in row:
             node.set_wall()
         canvas.reset_walls(grid)
+        for node in row:
+            assert node.reset
 
     @pytest.mark.parametrize('pos', [(random.randint(0, 99999), random.randint(0, 59)) for _ in range(5)])
     def test_fail_clicked_pos(self, canvas: Canvas, pos: Tuple[int, int]) -> None:
@@ -85,3 +89,18 @@ class TestCanvas:
     @pytest.mark.parametrize('pos', [(random.randint(0, 99999), random.randint(0, 99999)) for _ in range(5)])
     def test_get_clicked_pos(self, canvas: Canvas, pos: Tuple[int, int]) -> None:
         assert canvas.get_clicked_pos(pos)
+
+    @staticmethod
+    def get_mock_traversed_node(grid: List[List[Node]]) -> List[List[Node]]:
+        row = chain.from_iterable(grid)
+        # Divide and categorise to assign eligible node properties to test
+        for index, node in enumerate(row):
+            if index % 2:
+                node.set_open()
+            elif index % 3:
+                node.set_closed()
+            elif index % 5:
+                node.set_bomb_closed()
+            else:
+                node.set_path()
+        return grid
