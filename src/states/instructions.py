@@ -3,7 +3,7 @@ import colour
 from typing import Optional
 from ui.button import Button
 from ui.text_object import TextObject
-from .event_handler import InstructionsHandler
+from .instructions_handler import InstructionsHandler
 from .hotkeys import HotKeys
 
 
@@ -13,6 +13,9 @@ class Instructions(HotKeys):
         self.close_btn = Button(720, 180, 30, 30, 10, colour.DARK_RED, colour.RED, "✖", 30)
         self.forward_btn = Button(700, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, ">", 50)
         self.back_btn = Button(210, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, "<", 50)
+        self.visualgo_resource = Button(360, 268, 240, 55, 10, colour.DARK_GREY, colour.GREY, "", 0)
+        self.handson_resource = Button(350, 350, 260, 55, 10, colour.DARK_GREY, colour.GREY, "", 0)
+        self.github_repo = Button(210, 350, 190, 30, 10, colour.DARK_GREY, colour.GREY, "", 0)
         self.font = TextObject(colour.BLACK, "", 24, 0).get_font()
         self.index = 0
 
@@ -27,6 +30,34 @@ class Instructions(HotKeys):
                 y += text_surface.get_height()
                 self.screen.blit(text_surface, (self.length // 4.5, y))
                 x += text_surface.get_width()
+
+    def get_handson_resource_text(self) -> str:
+        if self.path:
+            handson_resource_text = f"\n{'Pathfinding:':>38} Red Blob\n" \
+                                    f"{'Games':>31} by Amit Patel\n"
+        else:
+            handson_resource_text = f"\n{'Mazes':>29} for Programmers\n" \
+                                    f"{'by':>35} Jamis Buck\n"
+        return handson_resource_text
+
+    def get_learn_more(self) -> str:
+        if self.index == 3:
+            if self.maze_options.active_option > -1 or (self.pathfinding_options.active_option > -1 and self.path):
+                self.visualgo_resource.render(self.screen)
+                self.handson_resource.render(self.screen)
+                active_option = self.pathfinding_options.options[self.pathfinding_options.active_option] \
+                    if self.path else self.maze_options.options[self.maze_options.active_option]
+                return f"{'Here are some resources to learn more about the':>25}\n" \
+                       f"{active_option} algorithm\n" \
+                       f"{'Algorithm':>35} explanation\n" \
+                       f"{'lectures':>35} by VisuAlgo\n" + self.get_handson_resource_text()
+            else:
+                self.github_repo.render(self.screen)
+        return "Thank you for browsing through the instructions\n" \
+               "\nClose the popup helper here for easy access to\n" \
+               "learn more about the latest algorithm visualized\n" \
+               "\nGo to source code\n" \
+               "MIT License\n"
 
     def get_instructions(self) -> Optional[str]:
         instructions = {
@@ -51,7 +82,9 @@ class Instructions(HotKeys):
                f"{'[2]':>15}: Solve using A* Search\n"
                f"{'[3]':>15}: Solve using Greedy Best First Search\n"
                f"{'[4]':>15}: Solve using Breadth First Search\n"
-               f"{'[5]':>15}: Solve using Depth First Search"
+               f"{'[5]':>15}: Solve using Depth First Search",
+
+            3: self.get_learn_more()
         }
         return instructions.get(self.index)
 

@@ -3,58 +3,12 @@ import colour
 from typing import Callable, Dict, List, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:  # Avoid circular imports
-    from .instructions import Instructions
     from .play import Play
     from ui.button import Button
     from ui.drop_down import DropDown
 
 # Since pygame keys are integer constants
 PATHFINDING_KEY_OFFSET = 49
-
-
-class InstructionsHandler:
-    instructions_registry: Dict[
-        Union[int, List[Callable[..., 'Instructions']]], List[Callable[..., pygame.event.Event]]] = {}
-
-    @staticmethod
-    def register(event_type: int) -> Callable[..., None]:
-        def decorator(func: Callable[..., pygame.event.Event]) -> None:
-            InstructionsHandler.instructions_registry.setdefault(event_type, []).append(func)
-
-        return decorator
-
-    @staticmethod
-    def notify(instructions: 'Instructions', event: pygame.event.Event) -> None:
-        func_loop = InstructionsHandler.instructions_registry[
-            event.type] if event.type in InstructionsHandler.instructions_registry else []
-        for func in func_loop:
-            func(instructions, event)
-
-
-@InstructionsHandler.register(pygame.QUIT)
-def instructions_quit(*_) -> None:
-    pygame.quit()
-    exit()
-
-
-@InstructionsHandler.register(pygame.MOUSEBUTTONDOWN)
-def helper_click_actions(instructions: 'Instructions', event: pygame.event.Event) -> None:
-    left_button = 1
-    close_btn = instructions.close_btn
-    forward_btn = instructions.forward_btn
-    back_btn = instructions.back_btn
-    if event.button == left_button:
-        if close_btn.clicked():
-            instructions.instructions = False
-            instructions.speed = 15
-        if forward_btn.clicked():
-            while instructions.index < 2:
-                instructions.index += 1
-                break
-        if back_btn.clicked():
-            while instructions.index > 0:
-                instructions.index -= 1
-                break
 
 
 class EventHandler:
