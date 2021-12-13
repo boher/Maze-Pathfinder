@@ -73,6 +73,8 @@ def learn_more_actions(instructions: 'Instructions', event: pygame.event.Event) 
     github_repo = instructions.github_repo
     if event.button == left_button:
         if handson_resource.clicked():
+            if instructions.maze_options.active_option > -1 and not instructions.path:
+                webbrowser.open("https://www.jamisbuck.org/mazes")
             if instructions.pathfinding_options.active_option > -1 and instructions.path:
                 webbrowser.open("https://www.redblobgames.com/pathfinding")
         if github_repo.clicked():
