@@ -9,10 +9,6 @@ class TestInstructionsHandler:
 
     # Arrange
     @pytest.fixture
-    def instructions(self) -> Instructions:
-        return Instructions()
-
-    @pytest.fixture
     def instructions_handler(self) -> InstructionsHandler:
         return InstructionsHandler()
 

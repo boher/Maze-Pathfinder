@@ -166,7 +166,7 @@ def bomb_state(play_obj: 'Play', event: pygame.event.Event) -> None:
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)
-def clear_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
+def clear_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
     left_button = 1
     clear_options = play_obj.clear_options
     clear_options.menu_active = clear_options.rect.collidepoint(play_obj.pos)
@@ -182,12 +182,10 @@ def clear_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
                 play_obj.clear_walls()
             if active_option == 2:
                 play_obj.clear_grid()
-            return active_option
-    return clear_options.clicked()
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)
-def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
+def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
     left_button = 1
     speed_btn = play_obj.speed_options.main
     speed_options = play_obj.speed_options
@@ -205,8 +203,6 @@ def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> int:
                 play_obj.speed = 15  # Default
             if active_option == 2:
                 play_obj.speed = 5  # Fast
-            return active_option
-    return speed_options.clicked()
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)
@@ -231,7 +227,7 @@ def pathfinding_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
     algo_actions(play_obj, event, pathfinding_btn, pathfinding_options)
 
 
-def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button', algo_options: 'DropDown') -> int:
+def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button', algo_options: 'DropDown') -> None:
     left_button = 1
     algo_options.menu_active = algo_options.rect.collidepoint(play_obj.pos)
     if event.button == left_button and algo_options.clicked():
@@ -241,8 +237,6 @@ def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button'
         elif algo_options.draw_menu and active_option >= 0:
             algo_options.draw_menu = False
             algo_btn.text = algo_options.options[active_option]
-        return active_option
-    return algo_options.clicked()
 
 
 def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event) -> None:

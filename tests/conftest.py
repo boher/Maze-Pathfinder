@@ -4,6 +4,7 @@ import pygame
 import random
 from types import ModuleType
 from typing import Generator, List
+from states.instructions import Instructions
 from states.play import Play
 from ui.node import Node
 
@@ -46,6 +47,12 @@ def random_node(grid: List[List[Node]]) -> Generator[Node, None, None]:
         for _ in all_nodes:
             yield random.sample(all_nodes, 1)[0]
     return generate_random_node(grid)
+
+
+# For TestInstructions and TestInstructionsHandler readability
+@pytest.fixture
+def instructions() -> Instructions:
+    return Instructions()
 
 
 @pytest.fixture
