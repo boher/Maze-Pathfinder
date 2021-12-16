@@ -12,10 +12,26 @@ PATHFINDING_KEY_OFFSET = 49
 
 
 class EventHandler:
+    """
+    Handle input events using decorators to modify the behaviour of methods based on the event type and UI elements
+    interacted
+
+    Attributes:
+        event_handler_registry: Dictionary of input events associated with its unique key and methods notified
+    """
     event_handler_registry: Dict[Union[int, List[Callable[..., 'Play']]], List[Callable[..., pygame.event.Event]]] = {}
 
     @staticmethod
     def register(event_type: int) -> Callable[..., None]:
+        """
+        Store methods into event_handler_registry dictionary, registering them based on their event type
+
+        Args:
+            event_type: Integer constant of the event
+
+        Returns:
+            Decorator used to register an input events method
+        """
         def decorator(func: Callable[..., pygame.event.Event]) -> None:
             EventHandler.event_handler_registry.setdefault(event_type, []).append(func)
 
@@ -23,6 +39,13 @@ class EventHandler:
 
     @staticmethod
     def notify(play_obj: 'Play', event: pygame.event.Event) -> None:
+        """
+        Subscribe methods to notifications based on their registered event type
+
+        Args:
+            play_obj: Game play state class instance
+            event: Pygame object for representing events
+        """
         func_loop = EventHandler.event_handler_registry[
             event.type] if event.type in EventHandler.event_handler_registry else []
         for func in func_loop:

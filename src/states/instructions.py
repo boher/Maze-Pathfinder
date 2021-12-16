@@ -8,6 +8,21 @@ from .hotkeys import HotKeys
 
 
 class Instructions(HotKeys):
+    """
+    Game instructions state, provides user a guide on how to interact with the application
+    Provides learning resources for more information on an algorithm not defined in game
+
+    Attributes:
+        close_btn: Button element for user to close the instructions
+        forward_btn: Button element for user to navigate to the next page in instructions
+        back_btn: Button element for user to navigate to the previous page in instructions
+        visualgo_resource: Button element for user to access the VisuAlgo resource
+        handson_resource: Button element for user to access handson resource for either maze generation or pathfinding algorithm
+        github_repo: Button element for user to access the GitHub repository of the source code
+        font: Set the font type used in instructions text
+        index: An integer of the current page to display in instructions
+    """
+
     def __init__(self) -> None:
         HotKeys.__init__(self)
         self.close_btn = Button(720, 180, 30, 30, 10, colour.DARK_RED, colour.RED, "✖", 30)
@@ -20,6 +35,7 @@ class Instructions(HotKeys):
         self.index = 0
 
     def blit_newlines(self, text: str, x: int, y: int) -> None:
+        """Format text to newline to fit within popup helper"""
         newlines = text.split('\n')
         for words in newlines:
             text_surface = self.font.render(words, True, colour.BLACK)
@@ -32,6 +48,7 @@ class Instructions(HotKeys):
                 x += text_surface.get_width()
 
     def get_handson_resource_text(self) -> str:
+        """Different resources for maze generation and pathfinding algorithms"""
         if self.path:
             handson_resource_text = f"\n{'Pathfinding:':>38} Red Blob\n" \
                                     f"{'Games':>31} by Amit Patel\n"
@@ -41,6 +58,7 @@ class Instructions(HotKeys):
         return handson_resource_text
 
     def get_learn_more(self) -> str:
+        """Display learn more instructions based on visualization state"""
         if self.index == 3:
             if self.maze_options.active_option > -1 or (self.pathfinding_options.active_option > -1 and self.path):
                 self.visualgo_resource.render(self.screen)
@@ -60,6 +78,7 @@ class Instructions(HotKeys):
                "MIT License\n"
 
     def get_instructions(self) -> Optional[str]:
+        """Get instructions based on the current page index"""
         instructions = {
             0: "This application visualizes various maze generation\n"
                "and pathfinding algorithms in a 2D canvas grid\n"
@@ -89,6 +108,7 @@ class Instructions(HotKeys):
         return instructions.get(self.index)
 
     def popup_helper(self) -> None:
+        """Display instructions over canvas grid"""
         while self.instructions:
             for event in pygame.event.get():
                 InstructionsHandler.notify(self, event)

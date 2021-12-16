@@ -121,7 +121,12 @@ class Algos:
 
     @staticmethod
     def is_bomb(node: Node) -> bool:
-        """Only bomb node has colour property of Surface type"""
+        """
+        Only bomb node has colour property of Surface type
+
+        Args:
+            node: Node in canvas grid
+        """
         if isinstance(node.colour, pygame.Surface):
             return True
         else:

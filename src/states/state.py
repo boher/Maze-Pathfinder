@@ -3,6 +3,19 @@ import pygame
 
 
 class State:
+    """
+    Abstract game state
+
+    Attributes:
+        run: A boolean indicating if application is running
+        instructions: A boolean indicating if instructions is displayed
+        length: Length of the Pygame screen
+        width: Width of the Pygame screen
+        screen: Initialize Pygame screen
+        images_path: Relative path of the images directory
+        icon: Load icon image
+    """
+
     def __init__(self) -> None:
         self.run = True
         self.instructions = True
@@ -15,10 +28,10 @@ class State:
         pygame.display.set_caption("Maze-Pathfinder")
         pygame.font.init()
 
-    # Abstract update state method
     def update(self) -> None:
+        """Abstract update state method"""
         pass
 
-    # Abstract render state method
     def render(self, screen: pygame.surface.Surface) -> None:
+        """Abstract render state method"""
         pass

@@ -83,13 +83,12 @@ class TestPlay:
         assert play_obj.run is False
 
     def test_state_events(self, play_obj: Play, mocker: MockerFixture) -> None:
-        mock_draw_canvas = mocker.patch.object(Play, 'draw_canvas')
         mock_popup_helper = mocker.patch.object(Play, 'popup_helper', side_effect=lambda: setattr(play_obj, 'play',
                                                                                                   False))
         mocker.patch.object(Play, 'get_events')
+        play_obj.clear_options.draw_menu = True  # Test dropdown menu is rendering its options
         play_obj.instructions = False
         play_obj.state_events()
-        mock_draw_canvas.assert_called()
         assert play_obj.draw_btn.colour == play_obj.draw_btn.hover_colour
         mock_popup_helper.assert_called()
         assert play_obj.play is False
