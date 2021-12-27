@@ -44,7 +44,7 @@ class DepthFS(Algos):
             neighbour.visited = True
             self.came_from[neighbour] = current
             self.stack.put(neighbour)
-            if neighbour != self.end and not neighbour.get_end():
+            if neighbour != self.end and not neighbour.get_start() and not neighbour.get_end():
                 neighbour.set_open()
 
     def execute(self) -> bool:

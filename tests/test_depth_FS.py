@@ -28,14 +28,25 @@ class TestDepthFS(TestAlgos):
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(DepthFS, 'set_speed')
         mocker.patch.object(DepthFS, 'manhattan_dist', return_value=12)
-        mocker.patch.object(Node, 'get_wall', return_value=False)
         current = next(random_node)
         current.neighbours = [next(random_node), next(random_node), next(random_node), next(random_node)]
         depth_fs.compare_neighbours(current)
         for neighbour in current.neighbours:
-            assert neighbour.get_wall
             assert depth_fs.came_from[neighbour] == current
             assert neighbour.visited
+            assert neighbour != depth_fs.end
+            assert not neighbour.get_start()
+            assert not neighbour.get_end()
+            assert neighbour.get_open()
+
+    def test_compare_neighbours_wall(self, depth_fs: DepthFS, random_node: Generator[Node, None, None]) -> None:
+        current = next(random_node)
+        neighbour_wall = next(random_node)
+        neighbour_wall.set_wall()
+        current.neighbours = [neighbour_wall]
+        depth_fs.compare_neighbours(current)
+        assert current.neighbours.pop().get_wall()
+        assert not neighbour_wall.get_open()
 
     def test_execute(self, depth_fs: DepthFS, random_node: Generator[Node, None, None], mocker: MockerFixture) -> None:
         depth_fs.start = next(random_node)

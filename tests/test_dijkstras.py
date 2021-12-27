@@ -31,7 +31,6 @@ class TestDijkstras(TestAlgos):
     def test_compare_neighbours(self, dijkstras: Dijkstras, random_node: Generator[Node, None, None],
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(Dijkstras, 'set_speed')
-        mocker.patch.object(Node, 'get_wall', return_value=False)
         current = next(random_node)
         dijkstras.distances[current] = 0
         current.neighbours = [random.choice(list(dijkstras.distances.keys())),
@@ -40,9 +39,21 @@ class TestDijkstras(TestAlgos):
                               random.choice(list(dijkstras.distances.keys()))]
         dijkstras.compare_neighbours(current)
         for neighbour in current.neighbours:
-            assert neighbour.get_wall
             assert dijkstras.came_from[neighbour] == current
             assert dijkstras.curr_distance > 1
+            assert neighbour != dijkstras.end
+            assert not neighbour.get_start()
+            assert not neighbour.get_end()
+            assert neighbour.get_open()
+
+    def test_compare_neighbours_wall(self, dijkstras: Dijkstras, random_node: Generator[Node, None, None]) -> None:
+        current = next(random_node)
+        neighbour_wall = random.choice(list(dijkstras.distances.keys()))
+        neighbour_wall.set_wall()
+        current.neighbours = [neighbour_wall]
+        dijkstras.compare_neighbours(current)
+        assert current.neighbours.pop().get_wall()
+        assert not neighbour_wall.get_open()
 
     def test_execute(self, dijkstras: Dijkstras, random_node: Generator[Node, None, None],
                      mocker: MockerFixture) -> None:

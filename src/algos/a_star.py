@@ -33,8 +33,9 @@ class AStar(Algos):
         self.f_score = {node: float("inf") for row in grid for node in row}
 
     def put_open_set(self) -> None:
-        """Set F(n) score of start node"""
+        """Set F(n) score of start node and put start node as the 1st in open set"""
         self.open_set.put((0, self.count, self.start))
+        self.open_set_hash = {self.start}
         self.g_score[self.start] = 0
         self.f_score[self.start] = self.manhattan_dist(self.start.get_pos(), self.end.get_pos())
         self.start.update_neighbours(self.grid)
@@ -66,7 +67,7 @@ class AStar(Algos):
                     self.count += 1
                     self.open_set.put((self.f_score[neighbour], self.count, neighbour))
                     self.open_set_hash.add(neighbour)
-                    if neighbour != self.end and not neighbour.get_end():
+                    if neighbour != self.end and not neighbour.get_start() and not neighbour.get_end():
                         neighbour.set_open()
 
     def execute(self) -> bool:
@@ -78,8 +79,6 @@ class AStar(Algos):
             False if no possible path
         """
         self.put_open_set()
-
-        self.open_set_hash = {self.start}
 
         while not self.open_set.empty():
             self.safe_quit()

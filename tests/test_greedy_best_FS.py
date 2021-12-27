@@ -29,13 +29,25 @@ class TestGreedyBestFS(TestAlgos):
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(GreedyBestFS, 'set_speed')
         mocker.patch.object(GreedyBestFS, 'manhattan_dist', return_value=12)
-        mocker.patch.object(Node, 'get_wall', return_value=False)
         current = next(random_node)
         current.neighbours = [next(random_node), next(random_node), next(random_node), next(random_node)]
         greedy_best_fs.compare_neighbours(current)
         for neighbour in current.neighbours:
             assert greedy_best_fs.came_from[neighbour] == current
             assert neighbour.visited
+            assert neighbour != greedy_best_fs.end
+            assert not neighbour.get_start()
+            assert not neighbour.get_end()
+            assert neighbour.get_open()
+
+    def test_compare_neighbours_wall(self, greedy_best_fs: GreedyBestFS, random_node: Generator[Node, None, None]) -> None:
+        current = next(random_node)
+        neighbour_wall = next(random_node)
+        neighbour_wall.set_wall()
+        current.neighbours = [neighbour_wall]
+        greedy_best_fs.compare_neighbours(current)
+        assert current.neighbours.pop().get_wall()
+        assert not neighbour_wall.get_open()
 
     def test_execute(self, greedy_best_fs: GreedyBestFS, random_node: Generator[Node, None, None],
                      mocker: MockerFixture) -> None:

@@ -34,7 +34,6 @@ class TestAStar(TestAlgos):
     def test_compare_neighbours(self, astar: AStar, random_node: Generator[Node, None, None], mocker: MockerFixture) -> None:
         mocker.patch.object(AStar, 'set_speed')
         mocker.patch.object(AStar, 'manhattan_dist', return_value=12)
-        mocker.patch.object(Node, 'get_wall', return_value=False)
         astar.open_set_hash = {next(random_node)}
         current = next(random_node)
         astar.g_score[current] = 0
@@ -45,8 +44,21 @@ class TestAStar(TestAlgos):
             assert astar.came_from[neighbour] == current
             assert astar.g_score[neighbour] == 1
             assert astar.f_score[neighbour] == 12 + 1
+            assert neighbour != astar.end
+            assert not neighbour.get_start()
+            assert not neighbour.get_end()
+            assert neighbour.get_open()
         assert astar.count == len(astar.open_set_hash) - 1
         assert astar.open_set.qsize() == len(astar.open_set_hash) - 1
+
+    def test_compare_neighbours_wall(self, astar: AStar, random_node: Generator[Node, None, None]) -> None:
+        current = next(random_node)
+        neighbour_wall = random.choice(list(astar.g_score.keys()))
+        neighbour_wall.set_wall()
+        current.neighbours = [neighbour_wall]
+        astar.compare_neighbours(current)
+        assert current.neighbours.pop().get_wall()
+        assert not neighbour_wall.get_open()
 
     def test_execute(self, astar: AStar, random_node: Generator[Node, None, None], mocker: MockerFixture) -> None:
         astar.start = astar.end = next(random_node)

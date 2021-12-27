@@ -45,7 +45,7 @@ class GreedyBestFS(Algos):
             neighbour.visited = True
             self.came_from[neighbour] = current
             self.open_set.put((self.manhattan_dist(neighbour.get_pos(), self.end.get_pos()), neighbour))
-            if neighbour != self.end and not neighbour.get_end():
+            if neighbour != self.end and not neighbour.get_start() and not neighbour.get_end():
                 neighbour.set_open()
 
     def execute(self) -> bool:

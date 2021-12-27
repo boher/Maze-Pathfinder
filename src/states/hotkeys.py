@@ -92,6 +92,7 @@ class HotKeys(Canvas):
             self.no_path_msg = start_to_bomb.no_path() if not self.path else False
             self.reset_node_visited(self.grid, self.start, self.end, self.bomb)
             if self.path:
+                self.start.visited = False
                 self.path = bomb_to_end.execute()
                 self.no_path_msg = bomb_to_end.no_path() if not self.path else False
             full_path = bomb_to_end.bomb_path + start_to_bomb.bomb_path

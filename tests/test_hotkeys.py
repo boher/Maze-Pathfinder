@@ -40,6 +40,7 @@ class TestHotKeys:
         assert play_obj.pathfinding_options.clicked
         assert play_obj.clear_path
         assert play_obj.node_traversal
+        assert play_obj.start.visited is False
         assert play_obj.path is True
 
     def test_clear_open_nodes(self, play_obj: Play) -> None:
@@ -73,7 +74,6 @@ class TestHotKeys:
     def test_clear_walls(self, play_obj: Play) -> None:
         play_obj.clear_walls()
         assert play_obj.reset_walls
-        assert play_obj.path is False
 
     def test_clear_grid(self, play_obj: Play, mocker: MockerFixture) -> None:
         play_obj.bomb_btn = mocker.Mock()

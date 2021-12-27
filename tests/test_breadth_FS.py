@@ -29,14 +29,25 @@ class TestBreadthFS(TestAlgos):
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(BreadthFS, 'set_speed')
         mocker.patch.object(BreadthFS, 'manhattan_dist', return_value=12)
-        mocker.patch.object(Node, 'get_wall', return_value=False)
         current = next(random_node)
         current.neighbours = [next(random_node), next(random_node), next(random_node), next(random_node)]
         breadth_fs.compare_neighbours(current)
         for neighbour in current.neighbours:
-            assert neighbour.get_wall
             assert breadth_fs.came_from[neighbour] == current
             assert neighbour.visited
+            assert neighbour != breadth_fs.end
+            assert not neighbour.get_start()
+            assert not neighbour.get_end()
+            assert neighbour.get_open()
+
+    def test_compare_neighbours_wall(self, breadth_fs: BreadthFS, random_node: Generator[Node, None, None]) -> None:
+        current = next(random_node)
+        neighbour_wall = next(random_node)
+        neighbour_wall.set_wall()
+        current.neighbours = [neighbour_wall]
+        breadth_fs.compare_neighbours(current)
+        assert current.neighbours.pop().get_wall()
+        assert not neighbour_wall.get_open()
 
     def test_execute(self, breadth_fs: BreadthFS, random_node: Generator[Node, None, None], mocker: MockerFixture) -> None:
         breadth_fs.start = next(random_node)

@@ -56,7 +56,7 @@ class Dijkstras(Algos):
                 self.curr_distance += 1
                 self.distances[neighbour] = distance
                 self.open_set.put((distance, neighbour))
-                if neighbour != self.end and not neighbour.get_end():
+                if neighbour != self.end and not neighbour.get_start() and not neighbour.get_end():
                     neighbour.set_open()
 
     def execute(self) -> bool:
