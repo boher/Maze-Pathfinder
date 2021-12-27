@@ -1,5 +1,6 @@
 import os
 import pygame
+from pygame import QUIT, KEYDOWN, MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 
 
 class State:
@@ -21,12 +22,13 @@ class State:
         self.instructions = True
         self.length = 960
         self.width = 640
-        self.screen = pygame.display.set_mode((self.length, self.width))
+        self.screen = pygame.display.set_mode((self.length, self.width), pygame.DOUBLEBUF)
         self.images_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "images")
         self.icon = pygame.image.load(os.path.join(self.images_path, "icon.png")).convert_alpha()
         pygame.display.set_icon(self.icon)
         pygame.display.set_caption("Maze-Pathfinder")
         pygame.font.init()
+        pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP])
 
     def update(self) -> None:
         """Abstract update state method"""

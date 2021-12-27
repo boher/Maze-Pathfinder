@@ -41,9 +41,9 @@ def grid(play_obj: Play) -> List[List[Node]]:
 
 
 @pytest.fixture(autouse=True)
-def random_node(grid: List[List[Node]]) -> Generator[Node, None, None]:
+def random_node(play_obj: Play, grid: List[List[Node]]) -> Generator[Node, None, None]:
     def generate_random_node(grid: List[List[Node]]) -> Generator[Node, None, None]:
-        all_nodes = [node for row in grid for node in row]
+        all_nodes = [node for row in grid[play_obj.nav_height:play_obj.rows] for node in row]
         for _ in all_nodes:
             yield random.sample(all_nodes, 1)[0]
     return generate_random_node(grid)

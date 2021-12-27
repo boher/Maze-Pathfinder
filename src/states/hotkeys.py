@@ -29,6 +29,7 @@ class HotKeys(Canvas):
         self.start: Optional[Node] = None
         self.end: Optional[Node] = None
         self.bomb: Optional[Node] = None
+        self.maze = False
         self.path = False
         self.no_path_msg = False
         self.no_start_end_msg = False
@@ -129,6 +130,7 @@ class HotKeys(Canvas):
     def clear_walls(self) -> None:
         """Clear walls in a canvas grid"""
         self.reset_walls(self.grid)
+        self.maze = False
 
     def clear_grid(self) -> None:
         """Clear the entire canvas grid"""
@@ -137,4 +139,5 @@ class HotKeys(Canvas):
         self.start = None
         self.end = None
         self.bomb = None
+        self.maze = False
         self.path = False

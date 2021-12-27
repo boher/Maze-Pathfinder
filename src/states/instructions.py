@@ -60,7 +60,8 @@ class Instructions(HotKeys):
     def get_learn_more(self) -> str:
         """Display learn more instructions based on visualization state"""
         if self.index == 3:
-            if self.maze_options.active_option > -1 or (self.pathfinding_options.active_option > -1 and self.path):
+            if (self.maze_options.active_option > -1 and self.maze) or (self.pathfinding_options.active_option > -1 and
+                                                                        self.path):
                 self.visualgo_resource.render(self.screen)
                 self.handson_resource.render(self.screen)
                 active_option = self.pathfinding_options.options[self.pathfinding_options.active_option] \

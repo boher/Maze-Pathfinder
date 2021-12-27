@@ -221,11 +221,11 @@ def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
             speed_options.draw_menu = False
             speed_btn.text = speed_options.options[active_option]
             if active_option == 0:
-                play_obj.speed = 25  # Slow
+                play_obj.speed = 20  # Slow
             if active_option == 1:
-                play_obj.speed = 15  # Default
+                play_obj.speed = 10  # Default
             if active_option == 2:
-                play_obj.speed = 5  # Fast
+                play_obj.speed = 0  # Fast
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)

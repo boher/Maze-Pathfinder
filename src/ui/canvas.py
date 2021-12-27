@@ -69,6 +69,13 @@ class Canvas(NavBar):
             if node.get_wall():
                 node.reset()
 
+    def draw_canvas_as_walls(self, grid: List[List[Node]], start: Optional[Node], end: Optional[Node],
+                             bomb: Optional[Node]) -> None:
+        row = chain.from_iterable(grid[self.nav_height:self.rows])
+        for node in row:
+            if node is not start and node is not end and node is not bomb:
+                node.set_wall()
+
     def get_clicked_pos(self, pos: Tuple[int, int]) -> Tuple[int, int]:
         x, y = pos
         row = y // self.gap

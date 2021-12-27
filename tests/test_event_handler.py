@@ -281,7 +281,7 @@ class TestEventHandler:
         assert mouse_down_event.button == 1
         assert play_obj.speed_options.draw_menu is False
         assert play_obj.speed_options.options[active_option] == speed_btn.text
-        assert play_obj.speed == 25
+        assert play_obj.speed == 20
 
     def test_default_speed_actions(self, play_obj: Play) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
@@ -293,7 +293,7 @@ class TestEventHandler:
         assert mouse_down_event.button == 1
         assert play_obj.speed_options.draw_menu is False
         assert play_obj.speed_options.options[active_option] == speed_btn.text
-        assert play_obj.speed == 15
+        assert play_obj.speed == 10
 
     def test_fast_speed_actions(self, play_obj: Play) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
@@ -305,7 +305,7 @@ class TestEventHandler:
         assert mouse_down_event.button == 1
         assert play_obj.speed_options.draw_menu is False
         assert play_obj.speed_options.options[active_option] == speed_btn.text
-        assert play_obj.speed == 5
+        assert play_obj.speed == 0
 
     def test_visualize_pathfinding_state(self, play_obj: Play, mocker: MockerFixture) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)

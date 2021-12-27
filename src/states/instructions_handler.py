@@ -63,7 +63,7 @@ def helper_click_actions(instructions: 'Instructions', event: pygame.event.Event
     if event.button == left_button:
         if close_btn.clicked():
             instructions.instructions = False
-            instructions.speed = 15
+            instructions.speed = 10
         if forward_btn.clicked():
             while instructions.index < 3:
                 instructions.index += 1
@@ -96,7 +96,7 @@ def learn_more_actions(instructions: 'Instructions', event: pygame.event.Event) 
     github_repo = instructions.github_repo
     if event.button == left_button:
         if handson_resource.clicked():
-            if instructions.maze_options.active_option > -1 and not instructions.path:
+            if instructions.maze_options.active_option > -1 and instructions.maze:
                 webbrowser.open("https://www.jamisbuck.org/mazes")
             if instructions.pathfinding_options.active_option > -1 and instructions.path:
                 webbrowser.open("https://www.redblobgames.com/pathfinding")

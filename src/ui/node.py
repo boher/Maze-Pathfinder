@@ -14,7 +14,6 @@ class Node:
         self.colour = colour.WHITE
         self.neighbours: List['Node'] = []
         self._visited = False
-        self.walls = [False, False, False, False]  # up, down, left, right
 
     def get_pos(self) -> Tuple[int, int]:
         """Position of node relative to canvas grid"""
@@ -43,9 +42,6 @@ class Node:
     def get_end(self) -> bool:
         """End node"""
         return self.colour == colour.RED
-
-    def btwn_wall(self, pos: int) -> bool:
-        return self.walls[pos]
 
     def get_bomb(self) -> pygame.Color:
         """Bomb node"""

@@ -74,6 +74,7 @@ class TestHotKeys:
     def test_clear_walls(self, play_obj: Play) -> None:
         play_obj.clear_walls()
         assert play_obj.reset_walls
+        assert play_obj.maze is False
 
     def test_clear_grid(self, play_obj: Play, mocker: MockerFixture) -> None:
         play_obj.bomb_btn = mocker.Mock()
@@ -84,4 +85,5 @@ class TestHotKeys:
         assert play_obj.start is None
         assert play_obj.end is None
         assert play_obj.bomb is None
+        assert play_obj.maze is False
         assert play_obj.path is False

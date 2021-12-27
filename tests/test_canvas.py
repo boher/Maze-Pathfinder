@@ -51,7 +51,7 @@ class TestCanvas:
         canvas.reset_open_nodes(grid)
         row = chain.from_iterable(grid)
         for node in row:
-            assert node.reset
+            assert node.colour == colour.WHITE
 
     def test_reset_node_visited(self, canvas: Canvas, grid: List[List[Node]], random_node: Generator[Node, None, None]) -> None:
         start = next(random_node)
@@ -71,7 +71,7 @@ class TestCanvas:
         row = chain.from_iterable(grid)
         canvas.reset_traversed_path(grid, start, end, bomb)
         for node in row:
-            assert node.reset
+            assert node.colour == colour.WHITE
 
     def test_reset_walls(self, canvas: Canvas, grid: List[List[Node]]) -> None:
         row = chain.from_iterable(grid)
@@ -79,14 +79,27 @@ class TestCanvas:
             node.set_wall()
         canvas.reset_walls(grid)
         for node in row:
-            assert node.reset
+            assert node.colour == colour.WHITE
+
+    def test_draw_canvas_as_walls(self, canvas: Canvas, grid: List[List[Node]], random_node: Generator[Node, None, None]) -> None:
+        start = next(random_node)
+        end = next(random_node)
+        bomb = next(random_node)
+        canvas.draw_canvas_as_walls(grid, start, end, bomb)
+        row = chain.from_iterable(grid[canvas.nav_height:canvas.rows])
+        for node in row:
+            if node is not start and node is not end and node is not bomb:
+                assert node.get_wall()
+            assert not start.get_wall()
+            assert not end.get_wall()
+            assert not bomb.get_wall()
 
     @pytest.mark.parametrize('pos', [(random.randint(0, 99999), random.randint(0, 59)) for _ in range(5)])
     def test_fail_clicked_pos(self, canvas: Canvas, pos: Tuple[int, int]) -> None:
         with pytest.raises(IndexError):
             canvas.get_clicked_pos(pos)
 
-    @pytest.mark.parametrize('pos', [(random.randint(0, 99999), random.randint(0, 99999)) for _ in range(5)])
+    @pytest.mark.parametrize('pos', [(random.randint(0, 99999), random.randint(60, 99999)) for _ in range(5)])
     def test_get_clicked_pos(self, canvas: Canvas, pos: Tuple[int, int]) -> None:
         assert canvas.get_clicked_pos(pos)
 

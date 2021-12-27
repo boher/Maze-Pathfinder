@@ -33,7 +33,7 @@ class TestInstructionsHandler:
         InstructionsHandler.notify(instructions, mouse_down_event)
         assert mouse_down_event.button == 1
         assert not instructions.instructions
-        assert instructions.speed == 15
+        assert instructions.speed == 10
 
     def test_helper_forward_btn_actions(self, instructions: Instructions, mocker: MockerFixture) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
