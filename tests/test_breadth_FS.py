@@ -28,7 +28,6 @@ class TestBreadthFS(TestAlgos):
     def test_compare_neighbours(self, breadth_fs: BreadthFS, random_node: Generator[Node, None, None],
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(BreadthFS, 'set_speed')
-        mocker.patch.object(BreadthFS, 'manhattan_dist', return_value=12)
         current = next(random_node)
         current.neighbours = [next(random_node), next(random_node), next(random_node), next(random_node)]
         breadth_fs.compare_neighbours(current)

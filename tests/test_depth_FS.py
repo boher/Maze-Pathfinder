@@ -27,7 +27,6 @@ class TestDepthFS(TestAlgos):
     def test_compare_neighbours(self, depth_fs: DepthFS, random_node: Generator[Node, None, None],
                                 mocker: MockerFixture) -> None:
         mocker.patch.object(DepthFS, 'set_speed')
-        mocker.patch.object(DepthFS, 'manhattan_dist', return_value=12)
         current = next(random_node)
         current.neighbours = [next(random_node), next(random_node), next(random_node), next(random_node)]
         depth_fs.compare_neighbours(current)
