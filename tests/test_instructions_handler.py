@@ -53,6 +53,19 @@ class TestInstructionsHandler:
         assert instructions.index > 0
         assert index_before - instructions.index == 1
 
+    def test_learn_more_maze_actions(self, instructions: Instructions, mocker: MockerFixture) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        mock_webbrowser_open = mocker.patch('webbrowser.open')
+        mocker.patch.object(instructions.visualgo_resource, 'clicked', return_value=True)
+        instructions.maze_options.active_option = 0
+        instructions.path = False
+        InstructionsHandler.notify(instructions, mouse_down_event)
+        assert mouse_down_event.button == 1
+        mock_webbrowser_open.assert_called_with(mocker.ANY)
+        args, _ = mock_webbrowser_open.call_args
+        maze_actions_url = args[0]
+        assert "visualgo" in maze_actions_url
+
     def test_learn_more_pathfinding_actions(self, instructions: Instructions, mocker: MockerFixture) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
         mock_webbrowser_open = mocker.patch('webbrowser.open')
@@ -80,6 +93,19 @@ class TestInstructionsHandler:
         args, _ = mock_webbrowser_open.call_args
         learn_more_landing_url = args[0]
         assert "github" in learn_more_landing_url
+
+    def test_handson_maze_actions(self, instructions: Instructions, mocker: MockerFixture) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        mock_webbrowser_open = mocker.patch('webbrowser.open')
+        mocker.patch.object(instructions.handson_resource, 'clicked', return_value=True)
+        instructions.maze_options.active_option = 0
+        instructions.maze = True
+        InstructionsHandler.notify(instructions, mouse_down_event)
+        assert mouse_down_event.button == 1
+        mock_webbrowser_open.assert_called_with(mocker.ANY)
+        args, _ = mock_webbrowser_open.call_args
+        learn_more_handson_url = args[0]
+        assert "mazes" in learn_more_handson_url
 
     def test_handson_pathfinding_actions(self, instructions: Instructions, mocker: MockerFixture) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)

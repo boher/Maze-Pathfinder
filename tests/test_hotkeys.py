@@ -20,6 +20,17 @@ class TestHotKeys:
         play_obj.update()
         assert play_obj.render
 
+    def test_maze_hotkeys(self, play_obj: Play, mocker: MockerFixture):
+        mock_algo = mocker.Mock()
+        mock_algo.execute.return_value = True
+        play_obj.maze_keys.get(pygame.K_F2)
+        play_obj.maze_hotkeys(pygame.K_F2)
+        assert play_obj.pathfinding_options.clicked
+        assert play_obj.clear_path
+        assert play_obj.node_traversal
+        assert play_obj.draw_canvas_as_walls
+        assert play_obj.maze is True
+
     def test_pathfinding_hotkeys(self, play_obj: Play, random_node: Generator[Node, None, None], mocker: MockerFixture) -> None:
         play_obj.start = next(random_node)
         play_obj.end = next(random_node)

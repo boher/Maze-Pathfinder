@@ -36,6 +36,9 @@ class HotKeys(Canvas):
         self.auto_compute = False
         self.speed = 0
         self.grid = self.create_grid()
+        self.maze_keys = {
+            pygame.K_F2: algos.RecursiveBacktracker
+        }
         self.pathfinding_keys = {
             pygame.K_1: algos.Dijkstras,
             pygame.K_2: algos.AStar,
@@ -53,6 +56,24 @@ class HotKeys(Canvas):
             no_start_end = TextObject(colour.ORANGE, "Please set the start and end node to visualize pathfinding "
                                                      "algorithm", self.rows, self.width // self.cols)
             no_start_end.render(self.screen)
+
+    def maze_hotkeys(self, key_event: int) -> None:
+        """
+        Get the maze generation algorithm associated with its unique key and executes its visualization
+
+        Args:
+            key_event: Integer constant of the key down event
+        """
+        if key_event in self.maze_keys:
+            selected_maze = self.maze_keys.get(key_event)
+            self.maze_options.clicked()
+            self.clear_path()
+            self.node_traversal(self.grid)
+            self.draw_canvas_as_walls(self.grid, self.start, self.end, self.bomb)
+            if selected_maze is not None:
+                top_left_node = self.grid[self.nav_height][self.rect.top]
+                self.maze = selected_maze(lambda: self.draw_canvas(self.grid), self.grid, top_left_node, top_left_node,
+                                          self.speed, self.auto_compute).execute()
 
     def pathfinding_hotkeys(self, key_event: int) -> None:
         """

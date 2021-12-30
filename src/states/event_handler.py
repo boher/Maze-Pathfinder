@@ -8,6 +8,7 @@ if TYPE_CHECKING:  # Avoid circular imports
     from ui.drop_down import DropDown
 
 # Since pygame keys are integer constants
+MAZE_KEY_OFFSET = 1073741883
 PATHFINDING_KEY_OFFSET = 49
 
 
@@ -150,6 +151,7 @@ def dismiss_text(play_obj: 'Play', *_) -> None:
 @EventHandler.register(pygame.KEYDOWN)
 def hot_key_down(play_obj: 'Play', event: pygame.event.Event) -> None:
     play_obj.no_path_msg = False
+    play_obj.maze_options.draw_menu = False
     play_obj.pathfinding_options.draw_menu = False
     if event.key == pygame.K_h:
         play_obj.instructions = True
@@ -232,15 +234,24 @@ def speed_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
 def visualize_state(play_obj: 'Play', event: pygame.event.Event) -> None:
     left_button = 1
     visualize_btn = play_obj.visualize_btn
+    maze_active_option = play_obj.maze_options.active_option
     pathfinding_active_option = play_obj.pathfinding_options.active_option
     if event.button == left_button and visualize_btn.clicked():
-        play_obj.pathfinding_options.draw_menu = False
+        play_obj.pathfinding_options.draw_menu = play_obj.maze_options.draw_menu = False
         visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA
-        play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
+        play_obj.maze_hotkeys(maze_active_option + MAZE_KEY_OFFSET) if not play_obj.maze else \
+            play_obj.pathfinding_hotkeys(pathfinding_active_option + PATHFINDING_KEY_OFFSET)
         if pathfinding_active_option + PATHFINDING_KEY_OFFSET in play_obj.pathfinding_keys:
             if not play_obj.start or not play_obj.end:
                 play_obj.no_start_end_msg = True
     visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE
+
+
+@EventHandler.register(pygame.MOUSEBUTTONDOWN)
+def maze_actions(play_obj: 'Play', event: pygame.event.Event) -> None:
+    maze_btn = play_obj.maze_options.main
+    maze_options = play_obj.maze_options
+    algo_actions(play_obj, event, maze_btn, maze_options)
 
 
 @EventHandler.register(pygame.MOUSEBUTTONDOWN)
@@ -264,14 +275,19 @@ def algo_actions(play_obj: 'Play', event: pygame.event.Event, algo_btn: 'Button'
 
 def hot_key_visualize(play_obj: 'Play', event: pygame.event.Event) -> None:
     visualize_btn = play_obj.visualize_btn
+    maze_btn = play_obj.maze_options.main
     pathfinding_btn = play_obj.pathfinding_options.main
     visualize_btn.colour = visualize_btn.hover_colour = colour.MAGENTA
     play_obj.clear_options.update()
     play_obj.speed_options.update()
+    if event.key in play_obj.maze_keys:
+        play_obj.maze_options.active_option = event.key - MAZE_KEY_OFFSET
+        maze_btn.text = play_obj.maze_options.options[event.key - MAZE_KEY_OFFSET]
     if event.key in play_obj.pathfinding_keys:
         play_obj.pathfinding_options.active_option = event.key - PATHFINDING_KEY_OFFSET
         pathfinding_btn.text = play_obj.pathfinding_options.options[event.key - PATHFINDING_KEY_OFFSET]
         if not play_obj.start or not play_obj.end:
             play_obj.no_start_end_msg = True
+    play_obj.maze_hotkeys(event.key)
     play_obj.pathfinding_hotkeys(event.key)
     visualize_btn.colour, visualize_btn.hover_colour = colour.DARK_ORANGE, colour.ORANGE

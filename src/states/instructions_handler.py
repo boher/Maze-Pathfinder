@@ -75,6 +75,17 @@ def helper_click_actions(instructions: 'Instructions', event: pygame.event.Event
 
 
 @InstructionsHandler.register(pygame.MOUSEBUTTONDOWN)
+def learn_more_maze_actions(instructions: 'Instructions', event: pygame.event.Event) -> None:
+    left_button = 1
+    maze_active_option = instructions.maze_options.active_option
+    visualgo_resource = instructions.visualgo_resource
+    if event.button == left_button and visualgo_resource.clicked():
+        if not instructions.path:
+            if maze_active_option == 0:
+                webbrowser.open(f"https://visualgo.net/en/dfsbfs?slide={maze_active_option + 5}")
+
+
+@InstructionsHandler.register(pygame.MOUSEBUTTONDOWN)
 def learn_more_pathfinding_actions(instructions: 'Instructions', event: pygame.event.Event) -> None:
     left_button = 1
     pathfinding_active_option = instructions.pathfinding_options.active_option

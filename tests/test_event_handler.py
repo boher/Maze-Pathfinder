@@ -2,7 +2,8 @@ import pytest
 import pygame
 from typing import Generator
 from pytest_mock import MockerFixture
-from states.event_handler import EventHandler, PATHFINDING_KEY_OFFSET
+from states.event_handler import EventHandler
+from states.event_handler import MAZE_KEY_OFFSET, PATHFINDING_KEY_OFFSET
 from states.play import Play
 from ui.node import Node
 
@@ -182,6 +183,15 @@ class TestEventHandler:
         assert play_obj.instructions is True
         mock_popup_helper.assert_called()
 
+    def test_maze_key_down(self, play_obj: Play, mocker: MockerFixture) -> None:
+        key_down_event = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_F2)
+        mock_maze_hotkeys = mocker.patch.object(Play, 'maze_hotkeys')
+        maze_btn = play_obj.maze_options.main
+        EventHandler.notify(play_obj, key_down_event)
+        assert key_down_event.key in play_obj.maze_keys
+        assert play_obj.maze_options.options[play_obj.maze_options.active_option] == maze_btn.text
+        mock_maze_hotkeys.assert_called_with(key_down_event.key)
+
     def test_pathfinding_key_down(self, play_obj: Play, mocker: MockerFixture) -> None:
         key_down_event = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_2)
         mock_pathfinding_hotkeys = mocker.patch.object(Play, 'pathfinding_hotkeys')
@@ -307,17 +317,38 @@ class TestEventHandler:
         assert play_obj.speed_options.options[active_option] == speed_btn.text
         assert play_obj.speed == 0
 
+    def test_visualize_maze_state(self, play_obj: Play, mocker: MockerFixture) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        mocker.patch.object(play_obj.visualize_btn, 'clicked', return_value=True)
+        mock_maze_hotkeys = mocker.patch.object(Play, 'maze_hotkeys')
+        play_obj.maze_options.active_option = 0
+        EventHandler.notify(play_obj, mouse_down_event)
+        assert mouse_down_event.button == 1
+        mock_maze_hotkeys.assert_called_with(play_obj.maze_options.active_option + MAZE_KEY_OFFSET)
+
     def test_visualize_pathfinding_state(self, play_obj: Play, mocker: MockerFixture) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
         mocker.patch.object(play_obj.visualize_btn, 'clicked', return_value=True)
         mock_pathfinding_hotkeys = mocker.patch.object(Play, 'pathfinding_hotkeys')
         play_obj.pathfinding_options.active_option = 3
+        play_obj.maze = True
         EventHandler.notify(play_obj, mouse_down_event)
         assert mouse_down_event.button == 1
         assert play_obj.start is None
         assert play_obj.end is None
         assert play_obj.no_start_end_msg is True
         mock_pathfinding_hotkeys.assert_called_with(play_obj.pathfinding_options.active_option + PATHFINDING_KEY_OFFSET)
+
+    def test_maze_actions(self, play_obj: Play) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        active_option = play_obj.maze_options.active_option = 0
+        maze_btn = play_obj.maze_options.main
+        maze_btn.pos = play_obj.maze_options.rect.center
+        play_obj.maze_options.draw_menu = True
+        EventHandler.notify(play_obj, mouse_down_event)
+        assert mouse_down_event.button == 1
+        assert not play_obj.maze_options.draw_menu
+        assert play_obj.maze_options.options[active_option] == maze_btn.text
 
     def test_pathfinding_actions(self, play_obj: Play) -> None:
         mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)

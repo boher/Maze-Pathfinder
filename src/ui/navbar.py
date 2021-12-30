@@ -22,7 +22,8 @@ class NavBar(State):
         self.pathfinding_options = DropDown(Button(250, 10, 190, 38, 10, colour.PURPLE, colour.BLUE, "Pathfinding", 20),
                                             ["Dijkstra's", "A* Search", "Greedy Best-First", "Breadth-First Search",
                                              "Depth-First Search"])
-        self.maze_options = DropDown(Button(42, 10, 200, 38, 10, colour.PURPLE, colour.BLUE, "Maze Generation", 20), [])
+        self.maze_options = DropDown(Button(42, 10, 200, 38, 10, colour.PURPLE, colour.BLUE, "Maze Generation", 20),
+                                     ["Recursive Backtracker"])
         self.nav_rect = pygame.Surface((self.length, self.width // 10.5))
         self.nav_rect.fill(colour.GREY)
         self.rect = self.nav_rect.get_rect()
