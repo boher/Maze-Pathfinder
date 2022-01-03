@@ -16,6 +16,7 @@ class Instructions(HotKeys):
         close_btn: Button element for user to close the instructions
         forward_btn: Button element for user to navigate to the next page in instructions
         back_btn: Button element for user to navigate to the previous page in instructions
+        skip_maze: Button element for user to toggle between visualization or auto maze generation
         visualgo_resource: Button element for user to access the VisuAlgo resource
         handson_resource: Button element for user to access handson resource for either maze generation or pathfinding algorithm
         github_repo: Button element for user to access the GitHub repository of the source code
@@ -28,6 +29,7 @@ class Instructions(HotKeys):
         self.close_btn = Button(720, 180, 30, 30, 10, colour.DARK_RED, colour.RED, "✖", 30)
         self.forward_btn = Button(700, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, ">", 50)
         self.back_btn = Button(210, 460, 50, 50, 10, colour.DARK_GREY, colour.GREY, "<", 50)
+        self.skip_maze = Button(410, 490, 155, 25, 10, colour.BLUE_GREY, colour.BLUE_GREY, "Maze Generation: ON", 15)
         self.visualgo_resource = Button(360, 268, 240, 55, 10, colour.DARK_GREY, colour.GREY, "", 0)
         self.handson_resource = Button(350, 350, 260, 55, 10, colour.DARK_GREY, colour.GREY, "", 0)
         self.github_repo = Button(210, 350, 190, 30, 10, colour.DARK_GREY, colour.GREY, "", 0)
@@ -115,7 +117,7 @@ class Instructions(HotKeys):
                 InstructionsHandler.notify(self, event)
 
             pygame.draw.rect(self.screen, colour.OFF_WHITE, (190, 170, 580, 360))
-            buttons = [self.close_btn, self.forward_btn, self.back_btn]
+            buttons = [self.close_btn, self.forward_btn, self.back_btn, self.skip_maze]
             for button in buttons:
                 button.render(self.screen)
             self.blit_newlines(f"INSTRUCTIONS TO PLAY\n{self.get_instructions()}\n{'[H]':>25}: Open this helper again",

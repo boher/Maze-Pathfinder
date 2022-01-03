@@ -1,4 +1,5 @@
 import pygame
+import colour
 import webbrowser
 from typing import Callable, Dict, List, TYPE_CHECKING, Union
 
@@ -113,3 +114,18 @@ def learn_more_actions(instructions: 'Instructions', event: pygame.event.Event) 
                 webbrowser.open("https://www.redblobgames.com/pathfinding")
         if github_repo.clicked():
             webbrowser.open("https://github.com/boher/Maze-Pathfinder")
+
+
+@InstructionsHandler.register(pygame.MOUSEBUTTONDOWN)
+def skip_maze_state(instructions: 'Instructions', event: pygame.event.Event) -> None:
+    left_button = 1
+    skip_maze_btn = instructions.skip_maze
+    if event.button == left_button and skip_maze_btn.clicked():
+        if not instructions.auto_generation:
+            instructions.auto_generation = True
+            skip_maze_btn.colour = colour.DARK_GREY
+            skip_maze_btn.text = "Maze Generation: OFF"
+        else:
+            instructions.auto_generation = False
+            skip_maze_btn.colour = colour.BLUE_GREY
+            skip_maze_btn.text = "Maze Generation: ON"

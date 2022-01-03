@@ -119,3 +119,18 @@ class TestInstructionsHandler:
         args, _ = mock_webbrowser_open.call_args
         learn_more_handson_url = args[0]
         assert "pathfinding" in learn_more_handson_url
+
+    def test_skip_maze_state(self, instructions: Instructions, mocker: MockerFixture) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        mocker.patch.object(instructions.skip_maze, 'clicked', return_value=True)
+        InstructionsHandler.notify(instructions, mouse_down_event)
+        assert instructions.auto_generation
+        assert "OFF" in instructions.skip_maze.text
+
+    def test_generate_maze_state(self, instructions: Instructions, mocker: MockerFixture) -> None:
+        mouse_down_event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1)
+        mocker.patch.object(instructions.skip_maze, 'clicked', return_value=True)
+        instructions.auto_generation = True
+        InstructionsHandler.notify(instructions, mouse_down_event)
+        assert not instructions.auto_generation
+        assert "ON" in instructions.skip_maze.text

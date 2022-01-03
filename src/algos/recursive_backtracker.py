@@ -11,6 +11,7 @@ class RecursiveBacktracker(Algos):
     Uses a stack to store untraversed wall nodes
 
     Attributes:
+        random_neighbour: Random neighbour node
         open_set_hash: Set list to store untraversed wall nodes
 
     Args:
@@ -25,6 +26,7 @@ class RecursiveBacktracker(Algos):
     def __init__(self, draw: Callable[[], None], grid: List[List[Node]], start: Node, end: Node, speed: int,
                  auto_compute: bool) -> None:
         Algos.__init__(self, draw, grid, start, end, speed, auto_compute)
+        self.random_neighbour = None
         self.open_set_hash: Set[Node] = set()
 
     def put_open_set(self) -> None:
@@ -44,7 +46,8 @@ class RecursiveBacktracker(Algos):
         neighbours = [neighbour for neighbour in current.neighbours if neighbour not in self.open_set_hash and
                       neighbour.row >= self.start.row]
         if neighbours:
-            random_neighbour = random.choice(neighbours)
+            self.random_neighbour = random.choice(neighbours)
+            self.random_neighbour.set_open()
 
             if not self.auto_compute:
                 self.set_speed()
@@ -52,10 +55,10 @@ class RecursiveBacktracker(Algos):
             for neighbour in neighbours:
                 self.open_set_hash.add(neighbour)
 
-                if neighbour != random_neighbour:
+                if neighbour != self.random_neighbour:
                     self.stack.put(neighbour)
 
-            self.stack.put(random_neighbour)
+            self.stack.put(self.random_neighbour)
             if current != self.start and current != self.end and not self.is_bomb(current):
                 current.reset()
 
@@ -74,4 +77,5 @@ class RecursiveBacktracker(Algos):
             self.compare_neighbours(current)
             if not self.auto_compute:
                 self.draw()
+            self.random_neighbour.reset()
         return True

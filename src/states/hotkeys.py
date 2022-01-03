@@ -19,6 +19,7 @@ class HotKeys(Canvas):
         no_path_msg: A boolean indicating if the no path message should be displayed
         no_start_end_msg: A boolean indicating if the start node and end node not satisfied message should be displayed
         auto_compute: A boolean indicating if pathfinding algorithm should automatically compute traversed path
+        auto_generation: A boolean indicating if maze generation algorithm should automatically generate
         speed: An integer for setting the visualization speed
         grid: Canvas grid of nodes
         pathfinding_keys: Dictionary of pathfinding algorithms with their key event used to initialize their methods
@@ -34,6 +35,7 @@ class HotKeys(Canvas):
         self.no_path_msg = False
         self.no_start_end_msg = False
         self.auto_compute = False
+        self.auto_generation = False
         self.speed = 0
         self.grid = self.create_grid()
         self.maze_keys = {
@@ -73,7 +75,7 @@ class HotKeys(Canvas):
             if selected_maze is not None:
                 top_left_node = self.grid[self.nav_height][self.rect.top]
                 self.maze = selected_maze(lambda: self.draw_canvas(self.grid), self.grid, top_left_node, top_left_node,
-                                          self.speed, self.auto_compute).execute()
+                                          self.speed, self.auto_generation).execute()
 
     def pathfinding_hotkeys(self, key_event: int) -> None:
         """
