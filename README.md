@@ -2,7 +2,7 @@
 ![Actions Status](https://github.com/boher/Maze-Pathfinder/actions/workflows/main.yml/badge.svg?branch=main)
 [![forthebadge made-with-python](https://forthebadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<br>[Project Basis](youtu.be/JtiK0DOeI4A)
+<br>[Project Basis](https://youtu.be/JtiK0DOeI4A)
 
 ## INSTRUCTIONS TO PLAY
 - Execution of main.py would open a pygame window, where user can click on any white squares (nodes) to place a start node (in green), followed by an end node (in red)
